@@ -4,6 +4,7 @@ public class BackgroungController : MonoBehaviour
 {
     [SerializeField] float minY;
     [SerializeField] Transform bgSpriteTransform;
+    PlayerController playerController;
 
     void OnEnable()
     {
@@ -12,6 +13,7 @@ public class BackgroungController : MonoBehaviour
 
     void OnDisable()
     {
+
         PlayerController.OnDepthChanged -= OnDepthChanged;
     }
 

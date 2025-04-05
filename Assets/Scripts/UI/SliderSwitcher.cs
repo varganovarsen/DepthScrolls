@@ -13,7 +13,7 @@ public class SliderSwitcher : MonoBehaviour
     void OnEnable()
     {
         playerController = GameController.Instance.player;
-        playerController.OnChangeControl += OnControlChanged;
+        PlayerController.OnChangeControl += OnControlChanged;
         _slider = GetComponent<Slider>();
         _slider.onValueChanged.AddListener(OnSliderValueChanged);
     }
@@ -25,7 +25,7 @@ public class SliderSwitcher : MonoBehaviour
 
     void OnDisable()
     {
-        playerController.OnChangeControl -= OnControlChanged;
+        PlayerController.OnChangeControl -= OnControlChanged;
         _slider.onValueChanged.RemoveListener(OnSliderValueChanged);
     }
 

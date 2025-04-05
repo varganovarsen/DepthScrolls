@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+
+    [SerializeField] LayerMask rockLayerMask;
     bool canDig = false;
     float currentControl = 0f;
     public float CurrentControl
@@ -15,7 +17,7 @@ public class PlayerController : MonoBehaviour
             OnChangeControl?.Invoke(currentControl);
         }
     }
-    public event Action<float> OnChangeControl;
+    public static event Action<float> OnChangeControl;
 
     [SerializeField, Range(0f, 5f)] float speed;
 
@@ -44,7 +46,7 @@ public class PlayerController : MonoBehaviour
         set
         {
             _maxEnergy = value;
-            OnEnergyChanged?.Invoke(MaxEnergy , CurrentEnergy);
+            OnEnergyChanged?.Invoke(MaxEnergy, CurrentEnergy);
         }
     }
     public static float _currentEnergy;
@@ -67,6 +69,8 @@ public class PlayerController : MonoBehaviour
         get { return _energyUsePerSecond; }
         set { _energyUsePerSecond = value; }
     }
+
+    private float damagePerClick = 2.5f;
     void Awake()
     {
         ResetEnergy();
@@ -76,7 +80,8 @@ public class PlayerController : MonoBehaviour
         canDig = true;
     }
 
-    public void ResetEnergy(){
+    public void ResetEnergy()
+    {
         CurrentEnergy = MaxEnergy;
     }
 
@@ -98,11 +103,41 @@ public class PlayerController : MonoBehaviour
 
 
         Depth += move;
-        Depth = Depth < 0f? 0f : Depth;
+        Depth = Depth < 0f ? 0f : Depth;
+
 
     }
 
-    
+    public void HandleMining()
+    {
+
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
+
+        if (hit.collider != null)
+        {
+            Rock rock = hit.collider.GetComponentInParent<Rock>();
+            if (rock != null)
+            {
+                if (rock.hitEffectPrefab)
+                {
+                    GameObject effect = Instantiate(rock.hitEffectPrefab, hit.point, Quaternion.identity);
+                    effect.transform.parent = rock.transform;
+                }
+                rock.Dig(damagePerClick);
+                
+            }
+        }
+    }
+
+    void OnDestroy()
+    {
+        OnChangeControl = null; // Clear event subscriptions
+        OnDepthChanged = null;
+        OnEnergyChanged = null;
+    }
+
+
 }
 
 

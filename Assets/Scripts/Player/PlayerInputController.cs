@@ -6,8 +6,9 @@ using UnityEngine.InputSystem;
 
 public class PlayerInputController : MonoBehaviour
 {
-    [SerializeField] float changeControlSpeed;    
+    [SerializeField] float changeControlSpeed;
     const string changeSpeedActionName = "ChangeSpeed";
+    const string digActionName = "DigRock";
 
     PlayerInput playerInput;
 
@@ -19,11 +20,15 @@ public class PlayerInputController : MonoBehaviour
     {
         playerInput = GetComponent<PlayerInput>();
         player = GetComponent<PlayerController>();
+
     }
 
-    public void OnChangeSpeed(){
+    public void OnChangeSpeed()
+    {
         float mouseInput = playerInput.actions.FindAction(changeSpeedActionName).ReadValue<float>();
         player.CurrentControl += mouseInput * changeControlSpeed;
 
     }
+
+    public void OnDigRock() => player.HandleMining();
 }

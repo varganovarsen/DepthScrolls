@@ -2,21 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class DepthController : MonoBehaviour
+public static class DepthController
 {
-    List<MovableObject> movingObjects = new List<MovableObject>();
+    static List<MovableObject> movingObjects = new List<MovableObject>();
 
-    void Awake()
-    {
-        PlayerController.OnDepthChanged += OnDepthChange;
-    }
-
-    void OnDisable()
-    {
-        PlayerController.OnDepthChanged -= OnDepthChange;
-    }
-
-    private void OnDepthChange(float currentDepth)
+    public static void OnDepthChange(float currentDepth)
     {
 
         List<MovableObject> objectsToRemove = new List<MovableObject>();
@@ -38,7 +28,7 @@ public class DepthController : MonoBehaviour
         }
     }
 
-    public void AddMovingObject(MovableObject obj)
+    public static void AddMovingObject(MovableObject obj)
     {
 
         MovableObject existingObject = movingObjects.FirstOrDefault(m => m.transform == obj.transform);
@@ -50,7 +40,7 @@ public class DepthController : MonoBehaviour
         movingObjects.Add(obj);
     }
 
-    public void RemoveMovingObject(Transform transformOfObject)
+    public static void RemoveMovingObject(Transform transformOfObject)
     {
 
         MovableObject obj = movingObjects.FirstOrDefault(m => m.transform == transformOfObject);

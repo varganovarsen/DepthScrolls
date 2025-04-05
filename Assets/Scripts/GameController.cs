@@ -10,13 +10,11 @@ public class GameController : MonoBehaviour
     const string GAME_CONTROLLER_PREFAB_PATH = "Prefabs/GameController";
     private static GameController instance;
 
-
     [SerializeField] GameObject playerPrefab;
     [SerializeField] GameObject guiPrefab;
 
 
     public PlayerController player;
-    public DepthController depthController;
     private bool isInit;
 
     Coroutine rockSpawningCoroutine;
@@ -38,10 +36,7 @@ public class GameController : MonoBehaviour
 
     void Awake()
     {
-        GameObject depthControllerObject = new GameObject("DepthController");
-        depthController = depthControllerObject.AddComponent<DepthController>();
-        depthControllerObject.transform.SetParent(this.transform);
-
+        PlayerController.OnDepthChanged += DepthController.OnDepthChange;
 
         player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity).GetComponent<PlayerController>();
         PlayerController.MaxEnergy = 1000;
@@ -126,4 +121,18 @@ public class GameController : MonoBehaviour
         player.ResetEnergy();
 
     }
+
+    void OnDestroy()
+{
+    PlayerController.OnDepthChanged -= DepthController.OnDepthChange;
+
+    if (instance == this)
+    {
+        if (player != null)
+        {
+            Destroy(player.gameObject); // Destroy the Player object
+        }
+        instance = null; // Clear the static instance reference
+    }
+}
 }

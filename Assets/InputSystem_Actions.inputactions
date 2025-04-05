@@ -94,6 +94,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "DigRock",
+                    "type": "Button",
+                    "id": "3dc92ab5-5486-4e08-9fa3-f58fd8ea84c4",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -514,6 +523,17 @@
                     "action": "ChangeSpeed",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "72c3e464-4e7b-4192-817d-e49299a182b2",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DigRock",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
