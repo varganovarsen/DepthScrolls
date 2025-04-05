@@ -81,13 +81,13 @@
                     "name": "Sprint",
                     "type": "Button",
                     "id": "641cd816-40e6-41b4-8c3d-04687c349290",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Dig",
+                    "name": "ChangeSpeed",
                     "type": "Value",
                     "id": "7420de33-4d7d-4042-9b3e-91a1d52a890d",
                     "expectedControlType": "",
@@ -489,7 +489,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Dig",
+                    "action": "ChangeSpeed",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -500,7 +500,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Dig",
+                    "action": "ChangeSpeed",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -511,7 +511,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Dig",
+                    "action": "ChangeSpeed",
                     "isComposite": false,
                     "isPartOfComposite": true
                 }

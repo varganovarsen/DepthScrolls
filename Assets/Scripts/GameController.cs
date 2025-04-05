@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -12,7 +13,8 @@ public class GameController : MonoBehaviour
     [SerializeField] GameObject playerPrefab;
     [SerializeField] GameObject guiPrefab;
 
-    PlayerController player;
+    public PlayerController player;
+    private bool isInit;
 
     public static GameController Instance
     {
@@ -28,12 +30,40 @@ public class GameController : MonoBehaviour
         }
     }
 
-    void Start()
+    void Awake()
     {
         player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity).GetComponent<PlayerController>();
     }
 
     public void StartDig(){
+        player.StartDigging();
+    }
+
+    public void EndDig(){
+        player.EndDigging();
+
+        if(player.Depth < 15f){
+            StartCoroutine(RestartDig(.5f));
+        } else{
+            StartCoroutine(RestartDig(2f));
+        }
+
+        player.CurrentControl = 0f;
+    }
+
+    private IEnumerator RestartDig(float timeToRestart){
+        
+        float startDepth = player.Depth;
+        float endDepth = 0f;
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < timeToRestart){
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsedTime / timeToRestart);
+            player.Depth = Mathf.Lerp(startDepth, endDepth, t);
+            yield return null;
+        }
         
     }
 }
