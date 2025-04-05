@@ -62,8 +62,6 @@ public class Rock : MonoBehaviour
     private IEnumerator OnHitAnimation()
     {
 
-        bool isMiddleDone = false;
-
         Vector3 startRotation = transform.localEulerAngles;
         Vector3 startScale = transform.localScale;
 
@@ -77,25 +75,32 @@ public class Rock : MonoBehaviour
             elapsedTime += Time.deltaTime;
             float t = elapsedTime / hitAnimationDuration;
             float curveValue = hitAnimationCurve.Evaluate(t);
-            if (curveValue == 1f)
-                isMiddleDone = true;
 
-            if (!isMiddleDone)
-            {
-                transform.localEulerAngles = Vector3.Lerp(startRotation, middleRotation, curveValue);
-                transform.localScale = Vector3.Lerp(startScale, middleScale, curveValue);
-            }
-            else
-            {
-                transform.localEulerAngles = Vector3.Lerp(middleRotation, basicRotation, curveValue);
-                transform.localScale = Vector3.Lerp(middleScale, basicScale, curveValue);
-            }
+
+            if (curveValue >= 1f)
+                break;
+
+            transform.localEulerAngles = Vector3.Lerp(startRotation, middleRotation, curveValue);
+            transform.localScale = Vector3.Lerp(startScale, middleScale, curveValue);
 
             yield return null;
         }
 
-        transform.localEulerAngles = basicRotation;
-        transform.localScale = basicScale;
+        while (elapsedTime < hitAnimationDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / hitAnimationDuration;
+            float curveValue = hitAnimationCurve.Evaluate(t);
+
+            float rotationZ = Mathf.LerpAngle(middleRotation.z, basicRotation.z, 1 - curveValue);
+            Vector3 rotation = transform.localEulerAngles;
+            rotation.z = rotationZ;
+            transform.localEulerAngles = rotation;
+            transform.localScale = Vector3.Lerp(middleScale, basicScale, 1 - curveValue);
+
+            yield return null;
+        }
+
 
     }
 

@@ -70,7 +70,13 @@ public class PlayerController : MonoBehaviour
         set { _energyUsePerSecond = value; }
     }
 
-    private float damagePerClick = 2.5f;
+    public static float DamagePerClick { get => damagePerClick; set => damagePerClick = value; }
+    public static float EnergyPerClick { get => energyPerClick; set => energyPerClick = value; }
+
+    private static float damagePerClick = 2.5f;
+
+    private static float energyPerClick = 3f;
+
     void Awake()
     {
         ResetEnergy();
@@ -110,6 +116,10 @@ public class PlayerController : MonoBehaviour
 
     public void HandleMining()
     {
+        
+        if(CurrentEnergy < EnergyPerClick)
+            return;
+
 
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
@@ -124,8 +134,9 @@ public class PlayerController : MonoBehaviour
                     GameObject effect = Instantiate(rock.hitEffectPrefab, hit.point, Quaternion.identity);
                     effect.transform.parent = rock.transform;
                 }
-                rock.Dig(damagePerClick);
-                
+                rock.Dig(DamagePerClick);
+
+                CurrentEnergy -= EnergyPerClick;
             }
         }
     }

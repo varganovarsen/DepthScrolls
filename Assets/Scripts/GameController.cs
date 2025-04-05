@@ -39,8 +39,10 @@ public class GameController : MonoBehaviour
         PlayerController.OnDepthChanged += DepthController.OnDepthChange;
 
         player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity).GetComponent<PlayerController>();
-        PlayerController.MaxEnergy = 1000;
-        PlayerController.EnergyUsePerSecond = 5f;
+        PlayerController.MaxEnergy = 100;
+        PlayerController.EnergyUsePerSecond = 1f;
+        PlayerController.DamagePerClick = 1f;
+        PlayerController.EnergyPerClick = 3f;
         player.ResetEnergy();
     }
 
