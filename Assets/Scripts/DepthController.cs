@@ -25,7 +25,6 @@ public class DepthController : MonoBehaviour
         {
             if (currentDepth - obj.depth > RockController.GetCameraTopEdgeY() + 5f)
             {
-                obj.transform.gameObject.SetActive(false);
                 objectsToRemove.Add(obj);
                 continue;
             }
@@ -35,7 +34,7 @@ public class DepthController : MonoBehaviour
 
         foreach (MovableObject obj in objectsToRemove)
         {
-            movingObjects.Remove(obj);
+           obj.transform.gameObject.SetActive(false);
         }
     }
 
@@ -49,6 +48,17 @@ public class DepthController : MonoBehaviour
             movingObjects.Remove(existingObject);
         }
         movingObjects.Add(obj);
+    }
+
+    public void RemoveMovingObject(Transform transformOfObject)
+    {
+
+        MovableObject obj = movingObjects.FirstOrDefault(m => m.transform == transformOfObject);
+
+        if (obj == null)
+            return;
+            
+        movingObjects.Remove(obj);
     }
 
     // Vector3 newPos = startPos;

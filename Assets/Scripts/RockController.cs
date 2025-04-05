@@ -38,6 +38,13 @@ public static class RockController
         }
     }
 
+    public static void DestroyAllRocks(){
+        foreach (GameObject rock in rocks)
+        {
+            rock.SetActive(false);
+        }
+    }
+
 
     public static void SpawnRock()
     {

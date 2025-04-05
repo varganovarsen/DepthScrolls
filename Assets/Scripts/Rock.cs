@@ -9,4 +9,9 @@ public class Rock : MonoBehaviour
     {
         GameController.Instance.depthController.AddMovingObject(new MovableObject(depth, transform));
     }
+
+    void OnDisable()
+    {
+        GameController.Instance.depthController.RemoveMovingObject(transform);
+    }
 }
