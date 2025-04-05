@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,7 +7,7 @@ public class UI_Controller : MonoBehaviour
 {
     [SerializeField] Button startDigButton;
     [SerializeField] Button endDigButton;
-    [SerializeField] GameObject sliderPrefab;
+    [SerializeField] TMP_Text energyText;
 
     public void OnEnable()
     {
@@ -15,12 +16,21 @@ public class UI_Controller : MonoBehaviour
 
         startDigButton.onClick.AddListener(OnStartDigButtonClick);
         endDigButton.onClick.AddListener(OnEndDigButtonClick);
+
+        PlayerController.OnEnergyChanged += UpdateEnergyMeter;
+
+    }
+
+    void Start()
+    {
+        UpdateEnergyMeter(PlayerController.MaxEnergy, PlayerController.CurrentEnergy);
     }
 
     void OnDisable()
     {
         startDigButton.onClick.RemoveAllListeners();
         endDigButton.onClick.RemoveAllListeners();
+        PlayerController.OnEnergyChanged -= UpdateEnergyMeter;
     }
 
     public void OnStartDigButtonClick()
@@ -37,4 +47,8 @@ public class UI_Controller : MonoBehaviour
         startDigButton.gameObject.SetActive(true);
     }
 
+    private void UpdateEnergyMeter(float maxEnergy, float currentEnergy)
+    {
+        energyText.text = Mathf.Floor(currentEnergy / maxEnergy * 100) + "%";
+    }
 }

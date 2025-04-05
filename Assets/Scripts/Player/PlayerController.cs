@@ -13,15 +13,14 @@ public class PlayerController : MonoBehaviour
         {
             currentControl = Mathf.Clamp(value, 0, 1);
             OnChangeControl?.Invoke(currentControl);
-            Debug.Log($"CurrentControl: {currentControl}");
         }
     }
     public event Action<float> OnChangeControl;
 
     [SerializeField, Range(0f, 5f)] float speed;
 
-    private float depth = 0f;
-    public float Depth
+    private static float depth = 0f;
+    public static float Depth
     {
         get
         {
@@ -36,12 +35,49 @@ public class PlayerController : MonoBehaviour
     }
 
     public static event Action<float> OnDepthChanged;
+    public static event Action<float, float> OnEnergyChanged;
 
+    private static float _maxEnergy = 0;
+    public static float MaxEnergy
+    {
+        get { return _maxEnergy; }
+        set
+        {
+            _maxEnergy = value;
+            OnEnergyChanged?.Invoke(MaxEnergy , CurrentEnergy);
+        }
+    }
+    public static float _currentEnergy;
 
+    public static float CurrentEnergy
+    {
+        get { return _currentEnergy; }
+        set
+        {
+            _currentEnergy = value;
+            OnEnergyChanged?.Invoke(MaxEnergy, CurrentEnergy);
+        }
+    }
 
+    public static float _energyUsePerSecond = 1f;
+    private static bool isOutOfEnergy => CurrentEnergy <= 0f;
+
+    public static float EnergyUsePerSecond
+    {
+        get { return _energyUsePerSecond; }
+        set { _energyUsePerSecond = value; }
+    }
+    void Awake()
+    {
+        ResetEnergy();
+    }
     public void StartDigging()
     {
         canDig = true;
+    }
+
+    public void ResetEnergy(){
+        CurrentEnergy = MaxEnergy;
     }
 
     public void EndDigging()
@@ -51,13 +87,22 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (!canDig)
+        if (!canDig || isOutOfEnergy)
             return;
 
         float move = CurrentControl * speed * Time.deltaTime;
+
+        CurrentEnergy -= move * EnergyUsePerSecond;
+        CurrentEnergy = CurrentEnergy < 0f ? 0f : CurrentEnergy;
+
+
 
         Depth += move;
         Depth = Depth < 0f? 0f : Depth;
 
     }
+
+    
 }
+
+

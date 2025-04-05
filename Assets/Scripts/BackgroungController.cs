@@ -15,12 +15,12 @@ public class BackgroungController : MonoBehaviour
         PlayerController.OnDepthChanged -= OnDepthChanged;
     }
 
+
     private void OnDepthChanged(float depth){
         Vector3 newBGPos = bgSpriteTransform.position;
         float y = Mathf.Clamp(depth + minY, minY, 0f);
         newBGPos.y = y;
         bgSpriteTransform.position = newBGPos;
 
-        Debug.Log($"Depth: {depth}. bgSpriteTransform.position: {bgSpriteTransform.position}");
     }    
 }

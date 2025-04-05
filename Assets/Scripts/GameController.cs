@@ -1,6 +1,7 @@
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEditor;
+using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
@@ -13,7 +14,9 @@ public class GameController : MonoBehaviour
     [SerializeField] GameObject playerPrefab;
     [SerializeField] GameObject guiPrefab;
 
+
     public PlayerController player;
+    public DepthController depthController;
     private bool isInit;
 
     public static GameController Instance
@@ -32,17 +35,42 @@ public class GameController : MonoBehaviour
 
     void Awake()
     {
+        GameObject depthControllerObject = new GameObject("DepthController");
+        depthController = depthControllerObject.AddComponent<DepthController>();
+        depthControllerObject.transform.SetParent(this.transform);
+
+
         player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity).GetComponent<PlayerController>();
+        PlayerController.MaxEnergy = 1000;
+        PlayerController.EnergyUsePerSecond = 5f;
+        player.ResetEnergy();
     }
+
+    private void Start()
+    {
+        RockController.PrepareRocks();
+    }
+
+    private void SpawnRock() => RockController.SpawnRock();
+
+    
+
+
 
     public void StartDig(){
         player.StartDigging();
+
+        SpawnRock();
+        SpawnRock();
+        SpawnRock();
+
+        InvokeRepeating(nameof(SpawnRock), 0f, 3f);
     }
 
     public void EndDig(){
         player.EndDigging();
 
-        if(player.Depth < 15f){
+        if(PlayerController.Depth < 15f){
             StartCoroutine(RestartDig(.5f));
         } else{
             StartCoroutine(RestartDig(2f));
@@ -53,7 +81,7 @@ public class GameController : MonoBehaviour
 
     private IEnumerator RestartDig(float timeToRestart){
         
-        float startDepth = player.Depth;
+        float startDepth = PlayerController.Depth;
         float endDepth = 0f;
 
         float elapsedTime = 0f;
@@ -61,9 +89,13 @@ public class GameController : MonoBehaviour
         while (elapsedTime < timeToRestart){
             elapsedTime += Time.deltaTime;
             float t = Mathf.Clamp01(elapsedTime / timeToRestart);
-            player.Depth = Mathf.Lerp(startDepth, endDepth, t);
+            PlayerController.Depth = Mathf.Lerp(startDepth, endDepth, t);
             yield return null;
         }
+
+        PlayerController.Depth = endDepth;
+
+        player.ResetEnergy();
         
     }
 }
