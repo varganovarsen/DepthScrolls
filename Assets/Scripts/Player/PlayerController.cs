@@ -4,6 +4,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 
+    [SerializeField] PlayerConfig playerConfig;
+
     [SerializeField] LayerMask rockLayerMask;
     bool canDig = false;
     float currentControl = 0f;
@@ -79,6 +81,19 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
+        PlayerConfig[] playerConfigs = Resources.FindObjectsOfTypeAll<PlayerConfig>();
+
+        if (playerConfigs.Length > 0)
+        {
+            playerConfig = playerConfigs[0];
+
+            DamagePerClick = playerConfig.basicDamagePerClick;
+            EnergyPerClick = playerConfig.basicEnergyPerClick;
+            EnergyUsePerSecond = playerConfig.basicEnergyUsePerSecond;
+            MaxEnergy = playerConfig.basicMaxEnergy;
+        }
+
+
         ResetEnergy();
     }
     public void StartDigging()
@@ -116,8 +131,8 @@ public class PlayerController : MonoBehaviour
 
     public void HandleMining()
     {
-        
-        if(CurrentEnergy < EnergyPerClick)
+
+        if (CurrentEnergy < EnergyPerClick)
             return;
 
 
