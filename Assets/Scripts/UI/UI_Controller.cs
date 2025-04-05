@@ -8,6 +8,9 @@ public class UI_Controller : MonoBehaviour
     [SerializeField] Button startDigButton;
     [SerializeField] Button endDigButton;
     [SerializeField] TMP_Text energyText;
+    [SerializeField] TMP_Text depthText;
+
+    const int NUM_OF_DIGITS_AFTER_DECIMAL_POINT = 1;
 
     public void OnEnable()
     {
@@ -18,18 +21,23 @@ public class UI_Controller : MonoBehaviour
         endDigButton.onClick.AddListener(OnEndDigButtonClick);
 
         PlayerController.OnEnergyChanged += UpdateEnergyMeter;
+        PlayerController.OnDepthChanged += UpdateDepthText;
 
     }
 
-    void Start()
+    IEnumerator Start()
     {
+        // yield return new WaitUntil(() => PlayerController.MaxEnergy > 0f);
+        yield return new WaitForSeconds(1f);
         UpdateEnergyMeter(PlayerController.MaxEnergy, PlayerController.CurrentEnergy);
+        UpdateDepthText(PlayerController.Depth);
     }
 
     void OnDisable()
     {
         startDigButton.onClick.RemoveAllListeners();
         endDigButton.onClick.RemoveAllListeners();
+        PlayerController.OnDepthChanged -= UpdateDepthText;
         PlayerController.OnEnergyChanged -= UpdateEnergyMeter;
     }
 
@@ -49,6 +57,12 @@ public class UI_Controller : MonoBehaviour
 
     private void UpdateEnergyMeter(float maxEnergy, float currentEnergy)
     {
-        energyText.text = Mathf.Floor(currentEnergy / maxEnergy * 100) + "%";
+        energyText.text = $"{Mathf.Floor(currentEnergy)} / {Mathf.Floor(maxEnergy)}"; 
+    }
+
+    private void UpdateDepthText(float depth)
+    {
+        float pow = Mathf.Pow(10, NUM_OF_DIGITS_AFTER_DECIMAL_POINT);
+        depthText.text = (Mathf.Floor(depth * pow) / pow).ToString() + "m";
     }
 }

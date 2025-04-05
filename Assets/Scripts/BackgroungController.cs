@@ -6,6 +6,8 @@ public class BackgroungController : MonoBehaviour
     [SerializeField] Transform bgSpriteTransform;
     PlayerController playerController;
 
+    
+
     void OnEnable()
     {
         PlayerController.OnDepthChanged += OnDepthChanged;

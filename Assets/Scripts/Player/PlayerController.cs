@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -74,23 +75,35 @@ public class PlayerController : MonoBehaviour
 
     public static float DamagePerClick { get => damagePerClick; set => damagePerClick = value; }
     public static float EnergyPerClick { get => energyPerClick; set => energyPerClick = value; }
+    public static float EnergyPerMeter { get => energyPerMeter; set => energyPerMeter = value; }
 
     private static float damagePerClick = 2.5f;
 
     private static float energyPerClick = 3f;
 
+    private static float energyPerMeter = .1f;
+
+    public bool CanRocketLaunchToSurface => Depth - CurrentEnergy / EnergyPerMeter <= 0f;
+
     void Awake()
     {
-        PlayerConfig[] playerConfigs = Resources.FindObjectsOfTypeAll<PlayerConfig>();
+        PlayerConfig playerConfig = Resources.Load<PlayerConfig>("PlayerConfig");
 
-        if (playerConfigs.Length > 0)
+        if (playerConfig)
         {
-            playerConfig = playerConfigs[0];
-
             DamagePerClick = playerConfig.basicDamagePerClick;
             EnergyPerClick = playerConfig.basicEnergyPerClick;
             EnergyUsePerSecond = playerConfig.basicEnergyUsePerSecond;
             MaxEnergy = playerConfig.basicMaxEnergy;
+            EnergyPerMeter = playerConfig.basicEnergyUsePerUnitDepth;
+        } else
+        {
+            Debug.LogError("PlayerConfig not found");
+            DamagePerClick = 999f;
+            EnergyPerClick = 999f;
+            EnergyUsePerSecond = 999f;
+            MaxEnergy = 999f;
+            EnergyPerMeter = 999f;
         }
 
 
@@ -152,9 +165,42 @@ public class PlayerController : MonoBehaviour
                 rock.Dig(DamagePerClick);
 
                 CurrentEnergy -= EnergyPerClick;
+                CurrentEnergy = CurrentEnergy < 0f ? 0f : CurrentEnergy;
             }
         }
     }
+
+
+    public  IEnumerator RocketLaunch(float timeToRestart)
+    {
+        EndDigging();
+
+        float startDepth = Depth;
+        float endDepth = startDepth - CurrentEnergy / EnergyPerMeter;
+        endDepth = endDepth < 0f ? 0f : endDepth;
+        
+        float startEnergy = CurrentEnergy;
+        float endEnergy = CurrentEnergy - Depth * energyPerMeter;
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < timeToRestart)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsedTime / timeToRestart);
+            Depth = Mathf.Lerp(startDepth, endDepth, t);
+            CurrentEnergy = Mathf.Lerp(startEnergy, endEnergy, t);
+            CurrentEnergy = CurrentEnergy < 0f ? 0f : CurrentEnergy;
+            Debug.Log(CurrentEnergy);
+            yield return null;
+        }
+
+        Depth = endDepth;
+
+
+
+    }
+
 
     void OnDestroy()
     {

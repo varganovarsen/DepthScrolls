@@ -44,12 +44,19 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         RockController.PrepareRocks();
+        LevelReset();
     }
 
     private void SpawnRock() => RockController.SpawnRock();
 
 
-
+    private void LevelReset()
+    {
+        RockController.DestroyAllRocks();
+        player.ResetEnergy();
+        PlayerController.Depth = 0f;
+        player.transform.position = new Vector3(0f, 0f, 0f);
+    }
 
 
     public void StartDig()
@@ -78,58 +85,86 @@ public class GameController : MonoBehaviour
     {
         player.EndDigging();
 
-        if (PlayerController.Depth < 15f)
-        {
-            StartCoroutine(RestartDig(.5f));
-        }
-        else
-        {
-            StartCoroutine(RestartDig(2f));
-        }
-
         player.CurrentControl = 0f;
-        
-        if(rockSpawningCoroutine != null)
+
+        if (rockSpawningCoroutine != null)
         {
             StopCoroutine(rockSpawningCoroutine);
             rockSpawningCoroutine = null;
         }
+
+        StartCoroutine(EndingDigging());
     }
 
-    private IEnumerator RestartDig(float timeToRestart)
+    private IEnumerator EndingDigging()
     {
 
-        float startDepth = PlayerController.Depth;
-        float endDepth = 0f;
+        bool canRocketLaunchToSurface = player.CanRocketLaunchToSurface;
+
+        if (canRocketLaunchToSurface)
+        {
+            float flightTime = PlayerController.Depth < 15f ? .5f : 2f;
+            StartCoroutine(player.RocketLaunch(flightTime));
+
+            yield return new WaitForSeconds(flightTime);
+
+
+
+        }
+        else
+        {
+            StartCoroutine(player.RocketLaunch(0.5f));
+
+            yield return new WaitForSeconds(.5f);
+
+            StartCoroutine(LoseAnimation(2f));
+
+            yield return new WaitForSeconds(3f);
+
+            //TODO: Add fadeToBlack effect
+        }
+
+
+        LevelReset();
+    }
+
+    private IEnumerator LoseAnimation(float animationTime)
+    {
+        Vector3 startPos = player.transform.position;
+
+        Vector3 endPos;
+        if (PlayerController.Depth < 15f)
+        {
+            endPos = new Vector3(startPos.x, 15f - PlayerController.Depth, startPos.z);
+        }
+        else
+        {
+            endPos = new Vector3(startPos.x, RockController.GetCameraTopEdgeY() + 10f, startPos.z);
+        }
 
         float elapsedTime = 0f;
-
-        while (elapsedTime < timeToRestart)
+        while (elapsedTime < animationTime)
         {
             elapsedTime += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsedTime / timeToRestart);
-            PlayerController.Depth = Mathf.Lerp(startDepth, endDepth, t);
+            float t = Mathf.Clamp01(elapsedTime / 1f);
+            player.transform.position = Vector3.Lerp(startPos, endPos, t);
             yield return null;
         }
 
-        PlayerController.Depth = endDepth;
-
-        RockController.DestroyAllRocks();
-        player.ResetEnergy();
-
     }
+
 
     void OnDestroy()
-{
-    PlayerController.OnDepthChanged -= DepthController.OnDepthChange;
-
-    if (instance == this)
     {
-        if (player != null)
+        PlayerController.OnDepthChanged -= DepthController.OnDepthChange;
+
+        if (instance == this)
         {
-            Destroy(player.gameObject); // Destroy the Player object
+            if (player != null)
+            {
+                Destroy(player.gameObject); // Destroy the Player object
+            }
+            instance = null; // Clear the static instance reference
         }
-        instance = null; // Clear the static instance reference
     }
-}
 }
