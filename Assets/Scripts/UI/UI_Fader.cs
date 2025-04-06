@@ -30,20 +30,45 @@ public class UI_Fader : MonoBehaviour
     public void FadeIn()
     {
         StopAllCoroutines();
-        StartCoroutine(ChangeAlpha(canvasGroup.alpha, 0f, FadeDuration));
+        StartCoroutine(ChangeAlpha(canvasGroup, canvasGroup.alpha, 0f, FadeDuration));
     }
 
     public void FadeOut()
     {
         StopAllCoroutines();
-        StartCoroutine(ChangeAlpha(canvasGroup.alpha, 1f, FadeDuration));
+        StartCoroutine(ChangeAlpha(canvasGroup,canvasGroup.alpha, 1f, FadeDuration));
     }
 
-    private IEnumerator ChangeAlpha(float from, float to, float duration)
+    // private IEnumerator ChangeAlpha(float from, float to, float duration)
+    // {
+    //     bool setInteractivityTo = to == 0f ? false : true;
+
+    //     ToggleInteractivity(!setInteractivityTo);
+
+
+    //     float elapsedTime = 0f;
+    //     while (elapsedTime < duration)
+    //     {
+    //         elapsedTime += Time.deltaTime;
+    //         float t = Mathf.Clamp01(elapsedTime / duration);
+    //         canvasGroup.alpha = Mathf.Lerp(from, to, t);
+    //         yield return null;
+    //     }
+
+    //     ToggleInteractivity(setInteractivityTo);
+    // }
+
+    public void ToggleInteractivity(bool setTo)
+    {
+        canvasGroup.interactable = setTo;
+        canvasGroup.blocksRaycasts = setTo;
+    }
+
+    public static IEnumerator ChangeAlpha(CanvasGroup canvasGroup, float from, float to, float duration)
     {
         bool setInteractivityTo = to == 0f ? false : true;
 
-        ToggleInteractivity(!setInteractivityTo);
+        ToggleGroupInteractivity(!setInteractivityTo);
 
 
         float elapsedTime = 0f;
@@ -55,12 +80,12 @@ public class UI_Fader : MonoBehaviour
             yield return null;
         }
 
-        ToggleInteractivity(setInteractivityTo);
-    }
+        ToggleGroupInteractivity(setInteractivityTo);
 
-    public void ToggleInteractivity(bool setTo)
-    {
-        canvasGroup.interactable = setTo;
-        canvasGroup.blocksRaycasts = setTo;
+        void ToggleGroupInteractivity(bool setTo)
+        {
+            canvasGroup.interactable = setTo;
+            canvasGroup.blocksRaycasts = setTo;
+        }
     }
 }

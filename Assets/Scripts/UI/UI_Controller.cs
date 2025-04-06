@@ -21,6 +21,10 @@ public class UI_Controller : MonoBehaviour
 
     PlayerController player;
 
+    [SerializeField] GameObject upgradePanel;
+    UI_UpgradeButton[] upgradeButtons;
+
+
 
     public void Init(PlayerController setPlayer)
     {
@@ -33,11 +37,28 @@ public class UI_Controller : MonoBehaviour
         startDigButton.gameObject.SetActive(true);
         endDigButton.gameObject.SetActive(false);
 
+        upgradeButtons = upgradePanel.GetComponentsInChildren<UI_UpgradeButton>();
+
         Subscribe();
     }
 
     public UI_FinePanel ShowFinePanel() => Instantiate(finePanelPrefab, transform).GetComponent<UI_FinePanel>();
     public UI_WinPanel ShowWinPanel() => Instantiate(winPanelPrefab, transform).GetComponent<UI_WinPanel>();
+
+    public void ShowUpgradePanel()
+    {
+        StartCoroutine(UI_Fader.ChangeAlpha(upgradePanel.GetComponent<CanvasGroup>(), upgradePanel.GetComponent<CanvasGroup>().alpha, 1f, .3f));
+        foreach (UI_UpgradeButton upgradeButton in upgradeButtons)
+        {
+            upgradeButton.UpdatePrice();
+        }
+    }
+
+    public void HideUpgradePanel()
+    {
+        StartCoroutine(UI_Fader.ChangeAlpha(upgradePanel.GetComponent<CanvasGroup>(), upgradePanel.GetComponent<CanvasGroup>().alpha, 0f, .3f));
+        // upgradePanel.SetActive(false);
+    }
 
     IEnumerator Start()
     {
@@ -62,6 +83,7 @@ public class UI_Controller : MonoBehaviour
         player.OnEnergyChanged += UpdateEnergyMeter;
         player.OnDepthChanged += UpdateDepthText;
         MoneyController.OnMoneyChanged += UpdateMoneyText;
+        GameController.OnLevelReset += ShowUpgradePanel;
     }
 
     private void Unsubscribe()
@@ -71,6 +93,7 @@ public class UI_Controller : MonoBehaviour
         player.OnDepthChanged -= UpdateDepthText;
         player.OnEnergyChanged -= UpdateEnergyMeter;
         MoneyController.OnMoneyChanged -= UpdateMoneyText;
+        GameController.OnLevelReset -= ShowUpgradePanel;
     }
 
     public void OnStartDigButtonClick()
@@ -78,6 +101,7 @@ public class UI_Controller : MonoBehaviour
         GameController.Instance.StartDig();
         endDigButton.gameObject.SetActive(true);
         startDigButton.gameObject.SetActive(false);
+        HideUpgradePanel();
     }
 
     public void OnEndDigButtonClick()

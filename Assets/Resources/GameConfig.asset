@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GameConfig
   m_EditorClassIdentifier: 
   startMoney: 100
-  winDepth: 100
+  winDepth: 150
   spawnOptions:
   - minDepth: 0
     newSpawnEveryXMeters: 10
@@ -32,7 +32,7 @@ MonoBehaviour:
     newSpawnEveryXMeters: 7
     spawnAmount: 3
     rockPrefabs:
-    - {fileID: 4451860213148238503, guid: b2211f82fd0aec6459a3da96285fcecf, type: 3}
+    - {fileID: 4451860213148238503, guid: 2f01a91e390fbc64d94d0b09919cb9c1, type: 3}
     rockChanses:
     - 1
     rockFillingPrefabs:
@@ -41,3 +41,16 @@ MonoBehaviour:
     rockFillingChanses:
     - 0.75399995
     - 0.246
+  - minDepth: 100
+    newSpawnEveryXMeters: 5
+    spawnAmount: 3
+    rockPrefabs:
+    - {fileID: 4451860213148238503, guid: 2f01a91e390fbc64d94d0b09919cb9c1, type: 3}
+    - {fileID: 4451860213148238503, guid: 095cdd075f1830c44b40543da22dd706, type: 3}
+    rockChanses:
+    - 0.049438074
+    - 0.9505619
+    rockFillingPrefabs:
+    - {fileID: 7198134789306661442, guid: 68ebca30da799a84994c323f75a78215, type: 3}
+    rockFillingChanses:
+    - 1

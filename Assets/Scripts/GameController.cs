@@ -24,12 +24,14 @@ public class GameController : MonoBehaviour
     private bool isInit;
 
     Coroutine rockSpawningCoroutine;
+    private UpgradeController upgradeController;
 
     public static GameController Instance => instance;
 
     public static event Action OnGameRestart;
 
     public static event Action OnLevelReset;
+    public UpgradeController UpgradeController => upgradeController;
 
 
     void Awake()
@@ -63,6 +65,7 @@ public class GameController : MonoBehaviour
         RockController.DestroyAllRocks();
         player.ResetEnergy();
         player.Depth = 0f;
+        player.CurrentControl = .25f;
         player.transform.position = new Vector3(0f, 0f, 0f);
     }
 
@@ -70,6 +73,8 @@ public class GameController : MonoBehaviour
     private void GameReset()
     {
         MoneyController.Money = PlayerConfig.Instance.startMoney;
+
+        upgradeController = new UpgradeController();
 
         if (player != null)
         {
@@ -81,6 +86,7 @@ public class GameController : MonoBehaviour
 
         player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity).GetComponent<PlayerController>();
         player.OnDepthChanged += DepthController.OnDepthChange;
+        player.CurrentControl = .25f;
 
 
         if (uiController == null)

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4679963436279222693}
   - component: {fileID: -6636791747953240577}
   m_Layer: 6
-  m_Name: Rock2
+  m_Name: Rock3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2074b32eeb1ec3408e20deb3dda5d42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialHealth: 14
+  initialHealth: 20
   hitEffectPrefab: {fileID: 1429954232896169633, guid: 83036083a4ebcd34f98131bd3cf6f4d2, type: 3}
   hitAnimationCurve:
     serializedVersion: 2
@@ -119,7 +119,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 1}
+  m_LocalScale: {x: 4.3326, y: 2.9721, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4679963436279222693}
@@ -169,7 +169,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.6415094, g: 0.31754974, b: 0.20274118, a: 1}
+  m_Color: {r: 0.16656284, g: 0.1698583, b: 0.1792453, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

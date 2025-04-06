@@ -20,7 +20,12 @@ public class PlayerController : MonoBehaviour
     }
     public static event Action<float> OnChangeControl;
 
-    [SerializeField, Range(0f, 5f)] float speed;
+     float speed;
+     public float Speed
+     {
+         get { return speed; }
+         set { speed = value; }
+     }
 
     private float depth = 0f;
     public float Depth
@@ -101,7 +106,7 @@ public class PlayerController : MonoBehaviour
             EnergyPerMeterRocket = PlayerConfig.Instance.basicEnergyUsePerMeterRocket;
             MoneyPerMeter = PlayerConfig.Instance.basicMoneyPerMeter;
             EnergyPerMeterDig = PlayerConfig.Instance.basicEnergyUsePerMeterDig;
-            speed = PlayerConfig.Instance.basicSpeed;
+            Speed = PlayerConfig.Instance.basicSpeed;
         } else
         {
             Debug.LogError("PlayerConfig not found");
@@ -135,7 +140,7 @@ public class PlayerController : MonoBehaviour
         if (!canDig || isOutOfEnergy)
             return;
 
-        float move = CurrentControl * speed * Time.deltaTime;
+        float move = CurrentControl * Speed * Time.deltaTime;
 
         CurrentEnergy -= (EnergyUsePerSecond * Time.deltaTime) + (EnergyPerMeterDig * move);  
         CurrentEnergy = CurrentEnergy < 0f ? 0f : CurrentEnergy;
