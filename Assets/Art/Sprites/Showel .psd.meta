@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Showel _0: -3137073227005479252
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

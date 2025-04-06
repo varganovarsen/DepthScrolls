@@ -1,7 +1,6 @@
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEditor;
-using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 
 public class GameController : MonoBehaviour

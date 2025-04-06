@@ -1,6 +1,5 @@
 using System;
 using JetBrains.Annotations;
-using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
