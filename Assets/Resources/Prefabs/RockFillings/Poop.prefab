@@ -121,13 +121,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 7198134789306661442}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78624998e95bcaa4ba109bcc1612aa15, type: 3}
+  m_Script: {fileID: 11500000, guid: 19c7c5709837a524f98f80fb44a6f09e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   pickupEffectPrefab: {fileID: 0}
   gfx: {fileID: 3204817979374658340}
   collider: {fileID: 5193723774420328491}
-  moneyReward: -5
+  energy: 5
 --- !u!1 &9146105924971934896
 GameObject:
   m_ObjectHideFlags: 0

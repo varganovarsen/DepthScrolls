@@ -20,7 +20,7 @@ public class Brilliant : MonoBehaviour, IPickupable
         StartCoroutine(IPickupableExtensions.PickupAnimation(gfx.transform, pickupTime));
         GameController.Instance.StartWinAnimation(pickupTime + 1f);
 
-        Destroy(gameObject, pickupTime);
+        Destroy(gameObject, pickupTime + .1f);
 
         collider.enabled = false;
         return true;

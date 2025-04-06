@@ -23,6 +23,7 @@ public class PlayerConfig : ScriptableObject
     }
     [SerializeField] public int startMoney = 100; 
     [SerializeField] public float basicMaxEnergy;
+    [SerializeField] public float basicSpeed;
     [SerializeField] public float basicEnergyUsePerSecond;
     [SerializeField] public float basicDamagePerClick;
     [SerializeField] public float basicEnergyPerClick;

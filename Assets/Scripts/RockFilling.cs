@@ -13,7 +13,7 @@ public abstract class RockFilling : MonoBehaviour, IPickupable
     protected virtual void Awake()
     {
         collider = GetComponent<Collider2D>();
-        
+
     }
 
 
@@ -34,7 +34,7 @@ public abstract class RockFilling : MonoBehaviour, IPickupable
 
 
         collider.enabled = false;
-        Destroy(gameObject, IPickupableExtensions.PICKUP_ANIMATION_TIME);
+        Destroy(gameObject, IPickupableExtensions.PICKUP_ANIMATION_TIME + .1f);
 
         return true;
     }

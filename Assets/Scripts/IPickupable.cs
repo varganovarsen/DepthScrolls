@@ -33,5 +33,7 @@ public class IPickupableExtensions{
         gfx.position = GameController.Instance.player.transform.position;
         gfx.localScale = Vector3.zero;
 
+        GameObject.Destroy(gfx.gameObject);
+
     }
 }

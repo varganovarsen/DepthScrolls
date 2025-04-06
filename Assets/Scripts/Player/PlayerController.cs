@@ -101,6 +101,7 @@ public class PlayerController : MonoBehaviour
             EnergyPerMeterRocket = PlayerConfig.Instance.basicEnergyUsePerMeterRocket;
             MoneyPerMeter = PlayerConfig.Instance.basicMoneyPerMeter;
             EnergyPerMeterDig = PlayerConfig.Instance.basicEnergyUsePerMeterDig;
+            speed = PlayerConfig.Instance.basicSpeed;
         } else
         {
             Debug.LogError("PlayerConfig not found");

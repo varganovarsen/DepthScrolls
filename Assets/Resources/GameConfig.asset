@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GameConfig
   m_EditorClassIdentifier: 
   startMoney: 100
-  winDepth: 1000
+  winDepth: 100
   spawnOptions:
   - minDepth: 0
     newSpawnEveryXMeters: 10
