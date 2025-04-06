@@ -11,43 +11,63 @@ public class UI_Controller : MonoBehaviour
     [SerializeField] TMP_Text depthText;
     [SerializeField] TMP_Text moneyText;
 
+    [SerializeField] GameObject finePanelPrefab;
+
     private UI_Fader fader;
     public UI_Fader Fader => fader;
 
     const int NUM_OF_DIGITS_AFTER_DECIMAL_POINT = 1;
 
+    PlayerController player;
 
-    public void OnEnable()
+
+    public void Init(PlayerController setPlayer)
     {
+        if (player != null)
+            Unsubscribe();
+
+        player = setPlayer;
         fader = GetComponentInChildren<UI_Fader>();
 
         startDigButton.gameObject.SetActive(true);
         endDigButton.gameObject.SetActive(false);
 
-        startDigButton.onClick.AddListener(OnStartDigButtonClick);
-        endDigButton.onClick.AddListener(OnEndDigButtonClick);
-
-        PlayerController.OnEnergyChanged += UpdateEnergyMeter;
-        PlayerController.OnDepthChanged += UpdateDepthText;
-        MoneyController.OnMoneyChanged += UpdateMoneyText;
-
+        Subscribe();
     }
+
+    public UI_FinePanel ShowFinePanel() => Instantiate(finePanelPrefab, transform).GetComponent<UI_FinePanel>();
 
     IEnumerator Start()
     {
         // yield return new WaitUntil(() => PlayerController.MaxEnergy > 0f);
         yield return new WaitForSeconds(1f);
-        UpdateEnergyMeter(PlayerController.MaxEnergy, PlayerController.CurrentEnergy);
-        UpdateDepthText(PlayerController.Depth);
+        UpdateEnergyMeter(player.MaxEnergy, player.CurrentEnergy);
+        UpdateDepthText(player.Depth);
         UpdateMoneyText(MoneyController.Money);
     }
 
     void OnDisable()
     {
+        Unsubscribe();
+    }
+
+    public void Subscribe(){
+        startDigButton.onClick.AddListener(OnStartDigButtonClick);
+        endDigButton.onClick.AddListener(OnEndDigButtonClick);
+
+        player = GameController.Instance.player;
+
+        player.OnEnergyChanged += UpdateEnergyMeter;
+        player.OnDepthChanged += UpdateDepthText;
+        MoneyController.OnMoneyChanged += UpdateMoneyText;
+    }
+
+    private void Unsubscribe()
+    {
         startDigButton.onClick.RemoveAllListeners();
         endDigButton.onClick.RemoveAllListeners();
-        PlayerController.OnDepthChanged -= UpdateDepthText;
-        PlayerController.OnEnergyChanged -= UpdateEnergyMeter;
+        player.OnDepthChanged -= UpdateDepthText;
+        player.OnEnergyChanged -= UpdateEnergyMeter;
         MoneyController.OnMoneyChanged -= UpdateMoneyText;
     }
 
@@ -67,7 +87,7 @@ public class UI_Controller : MonoBehaviour
 
     private void UpdateEnergyMeter(float maxEnergy, float currentEnergy)
     {
-        energyText.text = $"{Mathf.Floor(currentEnergy)} / {Mathf.Floor(maxEnergy)}"; 
+        energyText.text = $"{Mathf.Floor(currentEnergy)} / {Mathf.Floor(maxEnergy)}";
     }
 
     private void UpdateDepthText(float depth)

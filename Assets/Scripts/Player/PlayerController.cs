@@ -5,8 +5,6 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 
-    [SerializeField] PlayerConfig playerConfig;
-
     [SerializeField] LayerMask rockLayerMask;
     bool canDig = false;
     float currentControl = 0f;
@@ -24,8 +22,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField, Range(0f, 5f)] float speed;
 
-    private static float depth = 0f;
-    public static float Depth
+    private float depth = 0f;
+    public float Depth
     {
         get
         {
@@ -39,11 +37,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public static event Action<float> OnDepthChanged;
-    public static event Action<float, float> OnEnergyChanged;
+    public event Action<float> OnDepthChanged;
+    public event Action<float, float> OnEnergyChanged;
 
-    private static float _maxEnergy = 0;
-    public static float MaxEnergy
+    private float _maxEnergy = 0;
+    public float MaxEnergy
     {
         get { return _maxEnergy; }
         set
@@ -52,9 +50,9 @@ public class PlayerController : MonoBehaviour
             OnEnergyChanged?.Invoke(MaxEnergy, CurrentEnergy);
         }
     }
-    public static float _currentEnergy;
+    public float _currentEnergy;
 
-    public static float CurrentEnergy
+    public float CurrentEnergy
     {
         get { return _currentEnergy; }
         set
@@ -64,42 +62,41 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public static float _energyUsePerSecond = 1f;
-    private static bool isOutOfEnergy => CurrentEnergy <= 0f;
+    public float _energyUsePerSecond = 1f;
+    private bool isOutOfEnergy => CurrentEnergy <= 0f;
 
-    public static float EnergyUsePerSecond
+    public float EnergyUsePerSecond
     {
         get { return _energyUsePerSecond; }
         set { _energyUsePerSecond = value; }
     }
 
-    public static float DamagePerClick { get => damagePerClick; set => damagePerClick = value; }
-    public static float EnergyPerClick { get => energyPerClick; set => energyPerClick = value; }
-    public static float EnergyPerMeter { get => energyPerMeter; set => energyPerMeter = value; }
+    public float DamagePerClick { get => damagePerClick; set => damagePerClick = value; }
+    public float EnergyPerClick { get => energyPerClick; set => energyPerClick = value; }
+    public float EnergyPerMeter { get => energyPerMeter; set => energyPerMeter = value; }
 
-    private static float damagePerClick = 2.5f;
+    private float damagePerClick = 2.5f;
 
-    private static float energyPerClick = 3f;
+    private float energyPerClick = 3f;
 
-    private static float energyPerMeter = .1f;
+    private float energyPerMeter = .1f;
 
     public bool CanRocketLaunchToSurface => Depth - CurrentEnergy / EnergyPerMeter <= 0f;
 
-    private static float moneyPerMeter;
-    public static float MoneyPerMeter {get => moneyPerMeter; set => moneyPerMeter = value;}
+    private float moneyPerMeter;
+    public float MoneyPerMeter { get => moneyPerMeter; set => moneyPerMeter = value; }
 
     void Awake()
     {
-        PlayerConfig playerConfig = Resources.Load<PlayerConfig>("PlayerConfig");
 
-        if (playerConfig)
+        if ( PlayerConfig.Instance)
         {
-            DamagePerClick = playerConfig.basicDamagePerClick;
-            EnergyPerClick = playerConfig.basicEnergyPerClick;
-            EnergyUsePerSecond = playerConfig.basicEnergyUsePerSecond;
-            MaxEnergy = playerConfig.basicMaxEnergy;
-            EnergyPerMeter = playerConfig.basicEnergyUsePerMeter;
-            MoneyPerMeter = playerConfig.basicMoneyPerMeter;
+            DamagePerClick = PlayerConfig.Instance.basicDamagePerClick;
+            EnergyPerClick = PlayerConfig.Instance.basicEnergyPerClick;
+            EnergyUsePerSecond = PlayerConfig.Instance.basicEnergyUsePerSecond;
+            MaxEnergy = PlayerConfig.Instance.basicMaxEnergy;
+            EnergyPerMeter = PlayerConfig.Instance.basicEnergyUsePerMeter;
+            MoneyPerMeter = PlayerConfig.Instance.basicMoneyPerMeter;
         } else
         {
             Debug.LogError("PlayerConfig not found");
@@ -149,7 +146,7 @@ public class PlayerController : MonoBehaviour
     public void HandleClick()
     {
 
-        
+
 
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
@@ -157,7 +154,8 @@ public class PlayerController : MonoBehaviour
         if (hit.collider != null)
         {
 
-            if(hit.collider.TryGetComponent(out IPickupable pickupable)){
+            if (hit.collider.TryGetComponent(out IPickupable pickupable))
+            {
                 pickupable.PickUp();
                 return;
             }
@@ -180,14 +178,14 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    public  IEnumerator RocketLaunch(float timeToRestart)
+    public IEnumerator RocketLaunch(float timeToRestart)
     {
         EndDigging();
 
         float startDepth = Depth;
         float endDepth = startDepth - CurrentEnergy / EnergyPerMeter;
         endDepth = endDepth < 0f ? 0f : endDepth;
-        
+
         float startEnergy = CurrentEnergy;
         float endEnergy = CurrentEnergy - Depth * energyPerMeter;
 
@@ -200,7 +198,7 @@ public class PlayerController : MonoBehaviour
             Depth = Mathf.Lerp(startDepth, endDepth, t);
             CurrentEnergy = Mathf.Lerp(startEnergy, endEnergy, t);
             CurrentEnergy = CurrentEnergy < 0f ? 0f : CurrentEnergy;
-            Debug.Log(CurrentEnergy);
+            // Debug.Log(CurrentEnergy);
             yield return null;
         }
 

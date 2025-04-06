@@ -6,17 +6,16 @@ public class BackgroungController : MonoBehaviour
     [SerializeField] Transform bgSpriteTransform;
     PlayerController playerController;
 
-    
-
-    void OnEnable()
+    void Start()
     {
-        PlayerController.OnDepthChanged += OnDepthChanged;
+        playerController = GameController.Instance.player;
+        playerController.OnDepthChanged += OnDepthChanged;
     }
 
     void OnDisable()
     {
 
-        PlayerController.OnDepthChanged -= OnDepthChanged;
+        playerController.OnDepthChanged -= OnDepthChanged;
     }
 
 

@@ -1,7 +1,10 @@
+using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class GameController : MonoBehaviour
 {
@@ -21,27 +24,19 @@ public class GameController : MonoBehaviour
 
     Coroutine rockSpawningCoroutine;
 
-    public static GameController Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                GameObject controllerPrefab = Resources.Load(GAME_CONTROLLER_PREFAB_PATH) as GameObject;
-                instance = GameObject.Instantiate(controllerPrefab).GetComponent<GameController>();
-                DontDestroyOnLoad(instance.gameObject);
-            }
+    public static GameController Instance => instance;
 
-            return instance;
-        }
-    }
+    public static event Action OnGameRestart;
 
     void Awake()
     {
-        PlayerController.OnDepthChanged += DepthController.OnDepthChange;
+        if(instance == null){
+            instance = this;
+        } else {
+            Destroy(gameObject);
+        }
 
-        uiController = FindFirstObjectByType<UI_Controller>();
-        player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity).GetComponent<PlayerController>();
+        GameReset();
     }
 
     private void Start()
@@ -59,9 +54,37 @@ public class GameController : MonoBehaviour
     {
         RockController.DestroyAllRocks();
         player.ResetEnergy();
-        PlayerController.Depth = 0f;
+        player.Depth = 0f;
         player.transform.position = new Vector3(0f, 0f, 0f);
     }
+
+
+    private void GameReset()
+    {
+        MoneyController.Money = PlayerConfig.Instance.startMoney;
+
+        if (player != null)
+        {
+            player.OnDepthChanged -= DepthController.OnDepthChange;
+            Destroy(player.gameObject);
+
+        }
+
+
+        player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity).GetComponent<PlayerController>();
+        player.OnDepthChanged += DepthController.OnDepthChange;
+
+
+        if (uiController == null)
+        {
+            uiController = FindFirstObjectByType<UI_Controller>(FindObjectsInactive.Include);
+        }
+
+        uiController.Init(player);
+
+        MoneyController.Money = PlayerConfig.Instance.startMoney;
+    }
+
 
 
     public void StartDig()
@@ -108,34 +131,47 @@ public class GameController : MonoBehaviour
 
         if (canRocketLaunchToSurface)
         {
-            float flightTime = PlayerController.Depth < 15f ? .5f : 2f;
+            float flightTime = player.Depth < 15f ? .5f : 2f;
             StartCoroutine(player.RocketLaunch(flightTime));
 
             yield return new WaitForSeconds(flightTime);
 
-
+            LevelReset();
 
         }
         else
         {
             StartCoroutine(player.RocketLaunch(0.5f));
 
-            float moneyFine = PlayerController.Depth * PlayerController.MoneyPerMeter;
+            int moneyFine = Mathf.FloorToInt(player.Depth * player.MoneyPerMeter);
             yield return new WaitForSeconds(.5f);
 
 
             uiController.Fader.FadeOut();
             // StartCoroutine(LoseAnimation(2f));
-            yield return new WaitForSeconds(uiController.Fader.FadeDuration + 1f);
+            yield return new WaitForSeconds(uiController.Fader.FadeDuration + .5f);
 
-            uiController.Fader.FadeIn();
             //TODO: Add fadeToBlack effect
+            UI_FinePanel finePanle = uiController.ShowFinePanel();
+            finePanle.Initialize(moneyFine);
+            yield return new WaitUntil(() => finePanle.isClicked);
 
-            MoneyController.Money = Mathf.FloorToInt(MoneyController.Money - moneyFine);
+
+            if (MoneyController.Money < moneyFine)
+            {
+                RestartGame();
+            }
+            else
+            {
+                MoneyController.Money = MoneyController.Money - moneyFine;
+                LevelReset();
+                uiController.Fader.FadeIn();
+            }
+
         }
 
 
-        LevelReset();
+
     }
 
     private IEnumerator LoseAnimation(float animationTime)
@@ -143,9 +179,9 @@ public class GameController : MonoBehaviour
         Vector3 startPos = player.transform.position;
 
         Vector3 endPos;
-        if (PlayerController.Depth < 15f)
+        if (player.Depth < 15f)
         {
-            endPos = new Vector3(startPos.x, 15f - PlayerController.Depth, startPos.z);
+            endPos = new Vector3(startPos.x, 15f - player.Depth, startPos.z);
         }
         else
         {
@@ -166,7 +202,7 @@ public class GameController : MonoBehaviour
 
     void OnDestroy()
     {
-        PlayerController.OnDepthChanged -= DepthController.OnDepthChange;
+        player.OnDepthChanged -= DepthController.OnDepthChange;
 
         if (instance == this)
         {
@@ -176,5 +212,17 @@ public class GameController : MonoBehaviour
             }
             instance = null; // Clear the static instance reference
         }
+    }
+
+    internal void RestartGame()
+    {
+        StartCoroutine(RestartGameCoroutine());
+    }
+
+    private IEnumerator RestartGameCoroutine()
+    {
+        yield return new WaitForSeconds(2f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        GameReset();
     }
 }

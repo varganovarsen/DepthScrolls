@@ -28,6 +28,9 @@ public static class RockController
 
     public static void PrepareRocks()
     {
+
+        rocks = new List<GameObject>();
+
         for (int i = 0; i < ROCK_COUNT; i++)
         {
             GameObject rockObject = GameObject.Instantiate(rockPrefab);
@@ -61,7 +64,7 @@ public static class RockController
         if (rock != null)
         {
             rock.transform.position = new Vector2(spawnX, spawnY);
-            rock.GetComponent<Rock>().depth = PlayerController.Depth - spawnY;
+            rock.GetComponent<Rock>().depth = GameController.Instance.player.Depth - spawnY;
             rock.SetActive(true);
         }
     }
