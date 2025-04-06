@@ -13,6 +13,9 @@ public class GameController : MonoBehaviour
     [SerializeField] GameObject playerPrefab;
     [SerializeField] GameObject guiPrefab;
 
+    UI_Controller uiController;
+
+
 
     public PlayerController player;
     private bool isInit;
@@ -38,11 +41,14 @@ public class GameController : MonoBehaviour
     {
         PlayerController.OnDepthChanged += DepthController.OnDepthChange;
 
+        uiController = FindFirstObjectByType<UI_Controller>();
         player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity).GetComponent<PlayerController>();
     }
 
     private void Start()
     {
+        uiController.Fader.SetToOpaue();
+        uiController.Fader.FadeIn();
         RockController.PrepareRocks();
         LevelReset();
     }
@@ -114,13 +120,15 @@ public class GameController : MonoBehaviour
         else
         {
             StartCoroutine(player.RocketLaunch(0.5f));
-
+        
             yield return new WaitForSeconds(.5f);
 
-            StartCoroutine(LoseAnimation(2f));
 
-            yield return new WaitForSeconds(3f);
+            uiController.Fader.FadeOut();
+            // StartCoroutine(LoseAnimation(2f));
+            yield return new WaitForSeconds(uiController.Fader.FadeDuration + .5f);
 
+            uiController.Fader.FadeIn();
             //TODO: Add fadeToBlack effect
         }
 

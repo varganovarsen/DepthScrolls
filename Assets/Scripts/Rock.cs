@@ -27,6 +27,8 @@ public class Rock : MonoBehaviour
     void OnEnable()
     {
         health = INITIAL_HEALTH;
+        transform.rotation = Quaternion.Euler(basicRotation);
+        transform.localScale = basicScale;
         DepthController.AddMovingObject(new MovableObject(depth, transform));
     }
 

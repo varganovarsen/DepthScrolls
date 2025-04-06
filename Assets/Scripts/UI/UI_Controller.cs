@@ -10,10 +10,15 @@ public class UI_Controller : MonoBehaviour
     [SerializeField] TMP_Text energyText;
     [SerializeField] TMP_Text depthText;
 
+    private UI_Fader fader;
+    public UI_Fader Fader => fader;
+
     const int NUM_OF_DIGITS_AFTER_DECIMAL_POINT = 1;
 
     public void OnEnable()
     {
+        fader = GetComponentInChildren<UI_Fader>();
+
         startDigButton.gameObject.SetActive(true);
         endDigButton.gameObject.SetActive(false);
 
