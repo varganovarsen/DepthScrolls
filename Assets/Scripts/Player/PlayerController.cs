@@ -85,6 +85,9 @@ public class PlayerController : MonoBehaviour
 
     public bool CanRocketLaunchToSurface => Depth - CurrentEnergy / EnergyPerMeter <= 0f;
 
+    private static float moneyPerMeter;
+    public static float MoneyPerMeter {get => moneyPerMeter; set => moneyPerMeter = value;}
+
     void Awake()
     {
         PlayerConfig playerConfig = Resources.Load<PlayerConfig>("PlayerConfig");
@@ -95,7 +98,8 @@ public class PlayerController : MonoBehaviour
             EnergyPerClick = playerConfig.basicEnergyPerClick;
             EnergyUsePerSecond = playerConfig.basicEnergyUsePerSecond;
             MaxEnergy = playerConfig.basicMaxEnergy;
-            EnergyPerMeter = playerConfig.basicEnergyUsePerUnitDepth;
+            EnergyPerMeter = playerConfig.basicEnergyUsePerMeter;
+            MoneyPerMeter = playerConfig.basicMoneyPerMeter;
         } else
         {
             Debug.LogError("PlayerConfig not found");
@@ -142,20 +146,24 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    public void HandleMining()
+    public void HandleClick()
     {
 
-        if (CurrentEnergy < EnergyPerClick)
-            return;
-
+        
 
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
 
         if (hit.collider != null)
         {
+
+            if(hit.collider.TryGetComponent(out IPickupable pickupable)){
+                pickupable.PickUp();
+                return;
+            }
+
             Rock rock = hit.collider.GetComponentInParent<Rock>();
-            if (rock != null)
+            if (rock != null && CurrentEnergy >= EnergyPerClick)
             {
                 if (rock.hitEffectPrefab)
                 {
@@ -167,6 +175,7 @@ public class PlayerController : MonoBehaviour
                 CurrentEnergy -= EnergyPerClick;
                 CurrentEnergy = CurrentEnergy < 0f ? 0f : CurrentEnergy;
             }
+
         }
     }
 

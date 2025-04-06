@@ -8,7 +8,9 @@ public class PlayerConfig : ScriptableObject
     [SerializeField] public float basicDamagePerClick;
     [SerializeField] public float basicEnergyPerClick;
 
-    [SerializeField] public float basicEnergyUsePerUnitDepth;
+    [SerializeField] public float basicEnergyUsePerMeter;
+
+    [SerializeField] public float basicMoneyPerMeter;
 
 
     // PlayerController.MaxEnergy = 100;

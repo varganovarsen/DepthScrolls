@@ -1,9 +1,13 @@
 using System;
+using System.CodeDom.Compiler;
 using System.Collections;
 using UnityEngine;
 
 public class Rock : MonoBehaviour
 {
+
+    private static GameObject[] rockFillingsPrefabs;
+
     const float INITIAL_HEALTH = 10f;
     float health = INITIAL_HEALTH;
 
@@ -17,19 +21,56 @@ public class Rock : MonoBehaviour
 
     Coroutine hitAnimationCoroutine;
 
+    GameObject fillingObject;
+
     void Awake()
     {
+        if (rockFillingsPrefabs == null)
+        {
+            rockFillingsPrefabs = Resources.LoadAll<GameObject>("Prefabs/RockFillings");
+        }
+
         basicRotation = transform.localEulerAngles;
         basicScale = transform.localScale;
     }
 
     public float depth;
+
+    public static GameObject[] RockFillingsPrefabs
+    {
+        get
+        {
+
+            if (rockFillingsPrefabs == null)
+            {
+                rockFillingsPrefabs = Resources.LoadAll<GameObject>("Prefabs/RockFillings");
+            }
+            return rockFillingsPrefabs;
+        }
+    }
+
     void OnEnable()
+    {
+        SetUp();
+        DepthController.AddMovingObject(new MovableObject(depth, transform));
+    }
+
+    private void SetUp()
     {
         health = INITIAL_HEALTH;
         transform.rotation = Quaternion.Euler(basicRotation);
         transform.localScale = basicScale;
-        DepthController.AddMovingObject(new MovableObject(depth, transform));
+        GenerateFilling();
+    }
+
+    private void GenerateFilling()
+    {
+        if (fillingObject != null)
+            Destroy(fillingObject);
+        
+        fillingObject = Instantiate(RockFillingsPrefabs[UnityEngine.Random.Range(0, RockFillingsPrefabs.Length)], transform.position, transform.rotation);
+        fillingObject.transform.parent = transform;
+        fillingObject.SetActive(false);       
     }
 
     void OnDisable()
@@ -57,6 +98,11 @@ public class Rock : MonoBehaviour
                 particle.gameObject.transform.parent = null;
             }
 
+            transform.localScale = basicScale;
+            fillingObject.transform.parent = null;
+            DepthController.AddMovingObject(new MovableObject(depth, fillingObject.transform));
+            fillingObject.SetActive(true);
+            fillingObject = null;
             gameObject.SetActive(false);
         }
     }

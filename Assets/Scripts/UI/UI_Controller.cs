@@ -9,11 +9,13 @@ public class UI_Controller : MonoBehaviour
     [SerializeField] Button endDigButton;
     [SerializeField] TMP_Text energyText;
     [SerializeField] TMP_Text depthText;
+    [SerializeField] TMP_Text moneyText;
 
     private UI_Fader fader;
     public UI_Fader Fader => fader;
 
     const int NUM_OF_DIGITS_AFTER_DECIMAL_POINT = 1;
+
 
     public void OnEnable()
     {
@@ -27,6 +29,7 @@ public class UI_Controller : MonoBehaviour
 
         PlayerController.OnEnergyChanged += UpdateEnergyMeter;
         PlayerController.OnDepthChanged += UpdateDepthText;
+        MoneyController.OnMoneyChanged += UpdateMoneyText;
 
     }
 
@@ -36,6 +39,7 @@ public class UI_Controller : MonoBehaviour
         yield return new WaitForSeconds(1f);
         UpdateEnergyMeter(PlayerController.MaxEnergy, PlayerController.CurrentEnergy);
         UpdateDepthText(PlayerController.Depth);
+        UpdateMoneyText(MoneyController.Money);
     }
 
     void OnDisable()
@@ -44,6 +48,7 @@ public class UI_Controller : MonoBehaviour
         endDigButton.onClick.RemoveAllListeners();
         PlayerController.OnDepthChanged -= UpdateDepthText;
         PlayerController.OnEnergyChanged -= UpdateEnergyMeter;
+        MoneyController.OnMoneyChanged -= UpdateMoneyText;
     }
 
     public void OnStartDigButtonClick()
@@ -69,5 +74,10 @@ public class UI_Controller : MonoBehaviour
     {
         float pow = Mathf.Pow(10, NUM_OF_DIGITS_AFTER_DECIMAL_POINT);
         depthText.text = (Mathf.Floor(depth * pow) / pow).ToString() + "m";
+    }
+
+    private void UpdateMoneyText(int money)
+    {
+        moneyText.text = money.ToString() + "$";
     }
 }

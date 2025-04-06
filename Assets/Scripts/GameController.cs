@@ -120,16 +120,19 @@ public class GameController : MonoBehaviour
         else
         {
             StartCoroutine(player.RocketLaunch(0.5f));
-        
+
+            float moneyFine = PlayerController.Depth * PlayerController.MoneyPerMeter;
             yield return new WaitForSeconds(.5f);
 
 
             uiController.Fader.FadeOut();
             // StartCoroutine(LoseAnimation(2f));
-            yield return new WaitForSeconds(uiController.Fader.FadeDuration + .5f);
+            yield return new WaitForSeconds(uiController.Fader.FadeDuration + 1f);
 
             uiController.Fader.FadeIn();
             //TODO: Add fadeToBlack effect
+
+            MoneyController.Money = Mathf.FloorToInt(MoneyController.Money - moneyFine);
         }
 
 

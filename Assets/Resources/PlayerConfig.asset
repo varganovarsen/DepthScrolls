@@ -16,4 +16,5 @@ MonoBehaviour:
   basicEnergyUsePerSecond: 3
   basicDamagePerClick: 2
   basicEnergyPerClick: 5
-  basicEnergyUsePerUnitDepth: 1
+  basicEnergyUsePerMeter: 1
+  basicMoneyPerMeter: 5

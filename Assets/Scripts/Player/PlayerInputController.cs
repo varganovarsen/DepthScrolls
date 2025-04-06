@@ -30,5 +30,5 @@ public class PlayerInputController : MonoBehaviour
 
     }
 
-    public void OnDigRock() => player.HandleMining();
+    public void OnDigRock() => player.HandleClick();
 }
