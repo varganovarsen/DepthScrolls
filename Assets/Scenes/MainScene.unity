@@ -1612,7 +1612,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1625338265
@@ -2011,6 +2011,7 @@ MonoBehaviour:
   depthText: {fileID: 888829261}
   moneyText: {fileID: 1389120391}
   finePanelPrefab: {fileID: 128097824595370493, guid: 095aa503d31f2a0408495bfcecd857a0, type: 3}
+  winPanelPrefab: {fileID: 128097824595370493, guid: 01e13e9f6c3d47042af03b5cc329a631, type: 3}
 --- !u!1 &1978673349
 GameObject:
   m_ObjectHideFlags: 0

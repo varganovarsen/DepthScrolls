@@ -121,4 +121,12 @@ public static class RockController
 
         return currentOption;
     }
+
+    internal static void SpawnDiamond()
+    {
+        float spawnY = Camera.main.transform.position.y - Camera.main.orthographicSize - 10f;
+        GameObject diamond = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Diamond"), new Vector2(0, spawnY), Quaternion.identity);
+        diamond.GetComponent<Brilliant>().depth = GameController.Instance.player.Depth - spawnY;
+        DepthController.AddMovingObject(new MovableObject(diamond.GetComponent<Brilliant>().depth, diamond.transform));
+    }
 }

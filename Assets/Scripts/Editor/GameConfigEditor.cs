@@ -59,6 +59,7 @@ public class GameConfigEditor : Editor
         
         // Draw the standard fields
         EditorGUILayout.PropertyField(serializedObject.FindProperty("startMoney"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("winDepth"));
         
         // Draw spawnOptions array with custom handling
         SerializedProperty spawnOptionsProperty = serializedObject.FindProperty("spawnOptions");

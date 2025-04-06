@@ -12,6 +12,7 @@ public class UI_Controller : MonoBehaviour
     [SerializeField] TMP_Text moneyText;
 
     [SerializeField] GameObject finePanelPrefab;
+    [SerializeField] GameObject winPanelPrefab;
 
     private UI_Fader fader;
     public UI_Fader Fader => fader;
@@ -36,6 +37,7 @@ public class UI_Controller : MonoBehaviour
     }
 
     public UI_FinePanel ShowFinePanel() => Instantiate(finePanelPrefab, transform).GetComponent<UI_FinePanel>();
+    public UI_WinPanel ShowWinPanel() => Instantiate(winPanelPrefab, transform).GetComponent<UI_WinPanel>();
 
     IEnumerator Start()
     {

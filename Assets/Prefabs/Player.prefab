@@ -170,7 +170,7 @@ MonoBehaviour:
   rockLayerMask:
     serializedVersion: 2
     m_Bits: 64
-  speed: 3
+  speed: 4.04
   _currentEnergy: 0
   _energyUsePerSecond: 1
 --- !u!114 &6391662041281687778

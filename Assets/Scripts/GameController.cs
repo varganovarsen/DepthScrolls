@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Threading;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -33,9 +34,12 @@ public class GameController : MonoBehaviour
 
     void Awake()
     {
-        if(instance == null){
+        if (instance == null)
+        {
             instance = this;
-        } else {
+        }
+        else
+        {
             Destroy(gameObject);
         }
 
@@ -95,7 +99,8 @@ public class GameController : MonoBehaviour
     {
         player.StartDigging();
 
-        for (int i = 0; i < RockController.CurrentSpawnOption.spawnAmount; i++){
+        for (int i = 0; i < RockController.CurrentSpawnOption.spawnAmount; i++)
+        {
             RockController.SpawnRock();
         }
 
@@ -104,17 +109,28 @@ public class GameController : MonoBehaviour
 
 
     public IEnumerator SpawnRockCoroutine()
-     {
+    {
         float startDepth = GameController.Instance.player.Depth;
         float endDepth = startDepth + RockController.CurrentSpawnOption.newSpawnEveryXMeters;
 
-        yield return new WaitUntil (() => GameController.Instance.player.Depth >= endDepth);
+        yield return new WaitUntil(() => (GameController.Instance.player.Depth >= endDepth || GameController.Instance.player.Depth >= GameConfig.Instance.winDepth));
 
-        for (int i = 0; i < RockController.CurrentSpawnOption.spawnAmount; i++){
-            RockController.SpawnRock();
+        if (GameController.Instance.player.Depth >= GameConfig.Instance.winDepth)
+        {
+            RockController.SpawnDiamond();
+        }
+        else
+        {
+            for (int i = 0; i < RockController.CurrentSpawnOption.spawnAmount; i++)
+            {
+                RockController.SpawnRock();
+            }
+
+            rockSpawningCoroutine = StartCoroutine(SpawnRockCoroutine());
+
         }
 
-        rockSpawningCoroutine  = StartCoroutine(SpawnRockCoroutine());
+
 
     }
 
@@ -131,6 +147,16 @@ public class GameController : MonoBehaviour
         }
 
         StartCoroutine(EndingDigging());
+    }
+
+    public void RestartLevelWithoutElevation() => StartCoroutine(RestartLevelWithoutElevationCoroutine());
+
+    public IEnumerator RestartLevelWithoutElevationCoroutine()
+    {
+        uiController.Fader.FadeOut();
+        yield return new WaitForSeconds(uiController.Fader.FadeDuration + .5f);
+        LevelReset();
+        uiController.Fader.FadeIn();
     }
 
     private IEnumerator EndingDigging()
@@ -207,6 +233,39 @@ public class GameController : MonoBehaviour
             yield return null;
         }
 
+    }
+
+    public void StartWinAnimation(float animTime) => StartCoroutine(Instance.WinAnimation(animTime));
+
+    public  IEnumerator WinAnimation(float waitTime = 1f)
+    {
+        player.EndDigging();
+
+
+        // UI_WinPanel winPanel = uiController.ShowWinPanel();
+        // winPanel.SetUp();
+
+        yield return new WaitForSeconds(1f);
+
+        float elapsedTime = 0f;
+        float moneyCountTime = 5f;
+        int startMoney = MoneyController.Money;
+
+        while(elapsedTime < moneyCountTime){
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsedTime / moneyCountTime);
+            MoneyController.Money = Mathf.CeilToInt(Mathf.Lerp(startMoney, 1000000, t));
+            yield  return null;
+        }
+
+        MoneyController.Money = 1000000;
+
+        yield return new WaitForSeconds(.5f);
+
+
+
+        UI_WinPanel winPanel = uiController.ShowWinPanel();
+        winPanel.SetUp();
     }
 
 

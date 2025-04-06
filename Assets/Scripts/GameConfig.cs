@@ -21,6 +21,7 @@ public class GameConfig : ScriptableObject
         }
     }
     [SerializeField] public int startMoney = 100;
+    [SerializeField] public float winDepth = 1000f;
     [SerializeField] public SpawnOption[] spawnOptions;
 }
 

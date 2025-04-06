@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PlayerConfig
   m_EditorClassIdentifier: 
   startMoney: 100
-  basicMaxEnergy: 200
+  basicMaxEnergy: 2000
   basicEnergyUsePerSecond: 3
   basicDamagePerClick: 2
   basicEnergyPerClick: 5
