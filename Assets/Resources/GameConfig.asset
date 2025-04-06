@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19585febfb34c2b4bb2fe16d8e4d9f90, type: 3}
+  m_Name: GameConfig
+  m_EditorClassIdentifier: 
+  startMoney: 100
+  spawnOptions:
+  - minDepth: 0
+    newSpawnEveryXMeters: 10
+    spawnAmount: 3
+    rockPrefabs:
+    - {fileID: 4451860213148238503, guid: b2211f82fd0aec6459a3da96285fcecf, type: 3}
+    rockChanses:
+    - 1
+    rockFillingPrefabs:
+    - {fileID: 7198134789306661442, guid: 68ebca30da799a84994c323f75a78215, type: 3}
+    - {fileID: 7198134789306661442, guid: 88f43919cc1d91648b7e7c8d8f7be5d1, type: 3}
+    rockFillingChanses:
+    - 0.319
+    - 0.681
+  - minDepth: 30
+    newSpawnEveryXMeters: 7
+    spawnAmount: 3
+    rockPrefabs:
+    - {fileID: 4451860213148238503, guid: b2211f82fd0aec6459a3da96285fcecf, type: 3}
+    rockChanses:
+    - 1
+    rockFillingPrefabs:
+    - {fileID: 7198134789306661442, guid: 68ebca30da799a84994c323f75a78215, type: 3}
+    - {fileID: 7198134789306661442, guid: 88f43919cc1d91648b7e7c8d8f7be5d1, type: 3}
+    rockFillingChanses:
+    - 0.75399995
+    - 0.246

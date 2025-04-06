@@ -73,15 +73,18 @@ public class PlayerController : MonoBehaviour
 
     public float DamagePerClick { get => damagePerClick; set => damagePerClick = value; }
     public float EnergyPerClick { get => energyPerClick; set => energyPerClick = value; }
-    public float EnergyPerMeter { get => energyPerMeter; set => energyPerMeter = value; }
+    public float EnergyPerMeterRocket { get => energyPerMeterRocket; set => energyPerMeterRocket = value; }
 
+    public float EnergyPerMeterDig { get => energyPerMeterDig; set => energyPerMeterDig = value; }
     private float damagePerClick = 2.5f;
 
     private float energyPerClick = 3f;
 
-    private float energyPerMeter = .1f;
+    private float energyPerMeterRocket = 1f;
 
-    public bool CanRocketLaunchToSurface => Depth - CurrentEnergy / EnergyPerMeter <= 0f;
+    private float energyPerMeterDig = 5f;
+
+    public bool CanRocketLaunchToSurface => Depth - CurrentEnergy / EnergyPerMeterRocket <= 0f;
 
     private float moneyPerMeter;
     public float MoneyPerMeter { get => moneyPerMeter; set => moneyPerMeter = value; }
@@ -95,8 +98,9 @@ public class PlayerController : MonoBehaviour
             EnergyPerClick = PlayerConfig.Instance.basicEnergyPerClick;
             EnergyUsePerSecond = PlayerConfig.Instance.basicEnergyUsePerSecond;
             MaxEnergy = PlayerConfig.Instance.basicMaxEnergy;
-            EnergyPerMeter = PlayerConfig.Instance.basicEnergyUsePerMeter;
+            EnergyPerMeterRocket = PlayerConfig.Instance.basicEnergyUsePerMeterRocket;
             MoneyPerMeter = PlayerConfig.Instance.basicMoneyPerMeter;
+            EnergyPerMeterDig = PlayerConfig.Instance.basicEnergyUsePerMeterDig;
         } else
         {
             Debug.LogError("PlayerConfig not found");
@@ -104,7 +108,7 @@ public class PlayerController : MonoBehaviour
             EnergyPerClick = 999f;
             EnergyUsePerSecond = 999f;
             MaxEnergy = 999f;
-            EnergyPerMeter = 999f;
+            EnergyPerMeterRocket = 999f;
         }
 
 
@@ -132,7 +136,7 @@ public class PlayerController : MonoBehaviour
 
         float move = CurrentControl * speed * Time.deltaTime;
 
-        CurrentEnergy -= move * EnergyUsePerSecond;
+        CurrentEnergy -= (EnergyUsePerSecond * Time.deltaTime) + (EnergyPerMeterDig * move);  
         CurrentEnergy = CurrentEnergy < 0f ? 0f : CurrentEnergy;
 
 
@@ -183,11 +187,11 @@ public class PlayerController : MonoBehaviour
         EndDigging();
 
         float startDepth = Depth;
-        float endDepth = startDepth - CurrentEnergy / EnergyPerMeter;
+        float endDepth = startDepth - CurrentEnergy / EnergyPerMeterRocket;
         endDepth = endDepth < 0f ? 0f : endDepth;
 
         float startEnergy = CurrentEnergy;
-        float endEnergy = CurrentEnergy - Depth * energyPerMeter;
+        float endEnergy = CurrentEnergy - Depth * energyPerMeterRocket;
 
         float elapsedTime = 0f;
 

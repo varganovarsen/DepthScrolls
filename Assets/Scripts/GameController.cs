@@ -28,6 +28,9 @@ public class GameController : MonoBehaviour
 
     public static event Action OnGameRestart;
 
+    public static event Action OnLevelReset;
+
+
     void Awake()
     {
         if(instance == null){
@@ -52,6 +55,7 @@ public class GameController : MonoBehaviour
 
     private void LevelReset()
     {
+        OnLevelReset?.Invoke();
         RockController.DestroyAllRocks();
         player.ResetEnergy();
         player.Depth = 0f;
@@ -91,21 +95,26 @@ public class GameController : MonoBehaviour
     {
         player.StartDigging();
 
-        SpawnRock();
-        SpawnRock();
-        SpawnRock();
+        for (int i = 0; i < RockController.CurrentSpawnOption.spawnAmount; i++){
+            RockController.SpawnRock();
+        }
 
-        rockSpawningCoroutine = StartCoroutine(RockSpawning());
+        rockSpawningCoroutine = StartCoroutine(SpawnRockCoroutine());
     }
 
-    private IEnumerator RockSpawning()
-    {
-        float timeToSpawn = Random.Range(2f, 5f);
-        yield return new WaitForSeconds(timeToSpawn);
 
-        SpawnRock();
+    public IEnumerator SpawnRockCoroutine()
+     {
+        float startDepth = GameController.Instance.player.Depth;
+        float endDepth = startDepth + RockController.CurrentSpawnOption.newSpawnEveryXMeters;
 
-        rockSpawningCoroutine = StartCoroutine(RockSpawning());
+        yield return new WaitUntil (() => GameController.Instance.player.Depth >= endDepth);
+
+        for (int i = 0; i < RockController.CurrentSpawnOption.spawnAmount; i++){
+            RockController.SpawnRock();
+        }
+
+        rockSpawningCoroutine  = StartCoroutine(SpawnRockCoroutine());
 
     }
 
@@ -143,9 +152,10 @@ public class GameController : MonoBehaviour
         {
             StartCoroutine(player.RocketLaunch(0.5f));
 
-            int moneyFine = Mathf.FloorToInt(player.Depth * player.MoneyPerMeter);
             yield return new WaitForSeconds(.5f);
 
+            int moneyFine = Mathf.FloorToInt(player.Depth * player.MoneyPerMeter);
+            float meters = player.Depth;
 
             uiController.Fader.FadeOut();
             // StartCoroutine(LoseAnimation(2f));
@@ -153,7 +163,7 @@ public class GameController : MonoBehaviour
 
             //TODO: Add fadeToBlack effect
             UI_FinePanel finePanle = uiController.ShowFinePanel();
-            finePanle.Initialize(moneyFine);
+            finePanle.Initialize(moneyFine, meters);
             yield return new WaitUntil(() => finePanle.isClicked);
 
 

@@ -19,10 +19,10 @@ public class UI_FinePanel : MonoBehaviour
         finePanelButton.onClick.RemoveAllListeners();
     }
 
-    public void Initialize(int setFine) 
+    public void Initialize(int setFine, float depth) 
     {
         fine = setFine;
-        fineText.text = fine.ToString() + "$";
+        fineText.text = $"{fine.ToString()}$ for {Mathf.RoundToInt(depth)}m"; 
 
         if(fine > MoneyController.Money){
             fineText.color = Color.red;

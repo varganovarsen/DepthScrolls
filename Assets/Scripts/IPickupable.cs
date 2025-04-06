@@ -27,8 +27,6 @@ public class IPickupableExtensions{
             gfx.localScale = Vector3.Lerp(startScale, Vector3.zero, t);
 
 
-            Debug.Log(
-                $"elapsedTime: {elapsedTime}, t: {t}\n position: {gfx.position}\n scale: {gfx.localScale}\n player position: {GameController.Instance.player.transform.position}");
             yield return null;
         }
 

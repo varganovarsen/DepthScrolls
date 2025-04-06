@@ -2,14 +2,15 @@ using System;
 using System.CodeDom.Compiler;
 using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Rock : MonoBehaviour
 {
 
     private static GameObject[] rockFillingsPrefabs;
 
-    const float INITIAL_HEALTH = 10f;
-    float health = INITIAL_HEALTH;
+    [SerializeField] float initialHealth = 10f;
+    float health;
 
     [SerializeField] public GameObject hitEffectPrefab;
 
@@ -49,17 +50,12 @@ public class Rock : MonoBehaviour
         }
     }
 
-    void OnEnable()
+    public void SetUp()
     {
-        SetUp();
-        DepthController.AddMovingObject(new MovableObject(depth, transform));
-    }
-
-    private void SetUp()
-    {
-        health = INITIAL_HEALTH;
+        health = initialHealth;
         transform.rotation = Quaternion.Euler(basicRotation);
         transform.localScale = basicScale;
+        DepthController.AddMovingObject(new MovableObject(depth, transform));
         GenerateFilling();
     }
 
@@ -68,9 +64,27 @@ public class Rock : MonoBehaviour
         if (fillingObject != null)
             Destroy(fillingObject);
         
-        fillingObject = Instantiate(RockFillingsPrefabs[UnityEngine.Random.Range(0, RockFillingsPrefabs.Length)], transform.position, transform.rotation);
+        fillingObject = Instantiate(GetRandomFillingPrefab(), transform.position, transform.rotation);
         fillingObject.transform.parent = transform;
         fillingObject.SetActive(false);       
+    }
+
+    private GameObject GetRandomFillingPrefab()
+    {
+        SpawnOption currentOption = RockController.CurrentSpawnOption;
+        float rnd = Random.value;
+        float sum = 0f;
+        for (int i = 0; i < currentOption.rockFillingPrefabs.Length; i++)
+        {
+            sum += currentOption.rockFillingChanses[i];
+
+            if (rnd <= sum)
+            {
+                return currentOption.rockFillingPrefabs[i];
+            }
+        }
+
+        return currentOption.rockFillingPrefabs[0];
     }
 
     void OnDisable()

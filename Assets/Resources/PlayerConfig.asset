@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65e5c093d3afef74dac9ee83c4f0834f, type: 3}
   m_Name: PlayerConfig
   m_EditorClassIdentifier: 
+  startMoney: 100
   basicMaxEnergy: 200
   basicEnergyUsePerSecond: 3
   basicDamagePerClick: 2
   basicEnergyPerClick: 5
-  basicEnergyUsePerMeter: 1
+  basicEnergyUsePerMeterRocket: 1
+  basicEnergyUsePerMeterDig: 5
   basicMoneyPerMeter: 5

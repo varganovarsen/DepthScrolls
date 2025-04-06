@@ -27,7 +27,8 @@ public class PlayerConfig : ScriptableObject
     [SerializeField] public float basicDamagePerClick;
     [SerializeField] public float basicEnergyPerClick;
 
-    [SerializeField] public float basicEnergyUsePerMeter;
+    [SerializeField] public float basicEnergyUsePerMeterRocket;
+    [SerializeField] public float basicEnergyUsePerMeterDig;
 
     [SerializeField] public float basicMoneyPerMeter;
 

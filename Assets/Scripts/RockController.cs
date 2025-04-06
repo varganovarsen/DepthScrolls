@@ -1,48 +1,32 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 
 public static class RockController
 {
-    const int ROCK_COUNT = 20;
-    const string ROCK_PREFAB_PATH = "Prefabs/Rock";
     private static List<GameObject> rocks = new List<GameObject>();
 
     private static GameObject _rockPrefab;
     public const float spawnMinOffsetY = 3f;
-    const float spawnMaxOffsetY = 20f;
 
-    const float CENTER_OFFSET = 5f;
+    const float CENTER_OFFSET = 2f;
 
-    private static GameObject rockPrefab
-    {
-        get
-        {
-            if (_rockPrefab == null)
-            {
-                _rockPrefab = Resources.Load<GameObject>(ROCK_PREFAB_PATH);
-            }
-            return _rockPrefab;
-        }
-    }
+    public static SpawnOption CurrentSpawnOption => GetCurrentSpawnOption();
 
     public static void PrepareRocks()
     {
 
         rocks = new List<GameObject>();
 
-        for (int i = 0; i < ROCK_COUNT; i++)
-        {
-            GameObject rockObject = GameObject.Instantiate(rockPrefab);
-            rockObject.SetActive(false);
-            rocks.Add(rockObject);
-        }
     }
 
-    public static void DestroyAllRocks(){
+    public static void DestroyAllRocks()
+    {
         foreach (GameObject rock in rocks)
         {
-            rock.SetActive(false);
+
+            GameObject.Destroy(rock);
         }
     }
 
@@ -50,33 +34,45 @@ public static class RockController
     public static void SpawnRock()
     {
         Vector2 edges = GetCameraBottomEdgePosition();
-        float spawnX = Random.Range(edges.x, edges.y);
-
-        if(spawnX < CENTER_OFFSET && spawnX >= 0)
-            spawnX += CENTER_OFFSET;
-
-        if (spawnX <= 0 && spawnX > -CENTER_OFFSET)
-            spawnX -= CENTER_OFFSET;
-        
-        float spawnY = Camera.main.transform.position.y - Camera.main.orthographicSize - Random.Range(spawnMinOffsetY, spawnMaxOffsetY);
-
-        GameObject rock = GetInactiveRock();
-        if (rock != null)
+        float rnd = Random.value;
+        float spawnX = 0f;
+        if (rnd < 0.5f)
         {
-            rock.transform.position = new Vector2(spawnX, spawnY);
-            rock.GetComponent<Rock>().depth = GameController.Instance.player.Depth - spawnY;
-            rock.SetActive(true);
+            spawnX = Random.Range(edges.x, 0 - CENTER_OFFSET);
         }
+        else
+        {
+            spawnX = Random.Range(0 + CENTER_OFFSET, edges.y);
+        }
+
+        float spawnY = Camera.main.transform.position.y - Camera.main.orthographicSize - Random.Range(spawnMinOffsetY, CurrentSpawnOption.newSpawnEveryXMeters);
+
+        GameObject rock = GameObject.Instantiate(GetRandomRockPrefab(), new Vector2(spawnX, spawnY), Quaternion.identity);
+        rock.GetComponent<Rock>().depth = GameController.Instance.player.Depth - spawnY;
+        rock.GetComponent<Rock>().SetUp();
+        rocks.Add(rock);
+
+
     }
 
-    static GameObject GetInactiveRock()
+
+
+    private static GameObject GetRandomRockPrefab()
     {
-        foreach (GameObject rock in rocks)
+        SpawnOption currentOption = CurrentSpawnOption;
+        float rnd = Random.value;
+        float sum = 0f;
+        for (int i = 0; i < currentOption.rockPrefabs.Length; i++)
         {
-            if (!rock.activeInHierarchy) return rock;
+            sum += currentOption.rockChanses[i];
+
+            if (rnd <= sum)
+            {
+                return currentOption.rockPrefabs[i];
+            }
         }
 
-        return null;
+        return currentOption.rockPrefabs[0];
     }
 
     static Vector2 GetCameraBottomEdgePosition()
@@ -91,7 +87,7 @@ public static class RockController
 
         return new Vector2(leftEdge, rightEdge);
     }
-    
+
     public static float GetCameraTopEdgeY()
     {
         Camera cam = Camera.main;
@@ -100,5 +96,29 @@ public static class RockController
         Vector2 topCenter = (Vector2)cam.transform.position + new Vector2(0, halfHeight);
 
         return topCenter.y;
+    }
+
+
+
+    private static SpawnOption GetCurrentSpawnOption()
+    {
+
+        SpawnOption currentOption = null;
+        float currentDepth = GameController.Instance.player.Depth;
+        for (int i = 0; i < GameConfig.Instance.spawnOptions.Length; i++)
+        {
+            if (i == GameConfig.Instance.spawnOptions.Length - 1)
+            {
+                return GameConfig.Instance.spawnOptions[i];
+            }
+
+            if (currentDepth >= GameConfig.Instance.spawnOptions[i].minDepth && currentDepth < GameConfig.Instance.spawnOptions[i + 1].minDepth)
+            {
+                return GameConfig.Instance.spawnOptions[i];
+            }
+
+        }
+
+        return currentOption;
     }
 }

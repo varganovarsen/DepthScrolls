@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 5193723774420328491}
   - component: {fileID: 689808465984414916}
   m_Layer: 0
-  m_Name: Tooth
+  m_Name: Poop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -127,7 +127,7 @@ MonoBehaviour:
   pickupEffectPrefab: {fileID: 0}
   gfx: {fileID: 3204817979374658340}
   collider: {fileID: 5193723774420328491}
-  moneyReward: 20
+  moneyReward: -5
 --- !u!1 &9146105924971934896
 GameObject:
   m_ObjectHideFlags: 0
@@ -204,7 +204,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -3961948875967130905, guid: b0a17faf765ae3647b29fb859bec6d0a, type: 3}
+  m_Sprite: {fileID: 2931149821604620546, guid: 9ec3b8bfed96bac409b029deb5c0fde0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

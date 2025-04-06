@@ -24,8 +24,9 @@ public class PlayerInputController : MonoBehaviour
 
     public void OnChangeSpeed()
     {
-        float mouseInput = playerInput.actions.FindAction(changeSpeedActionName).ReadValue<float>();
-        player.CurrentControl += mouseInput * changeControlSpeed;
+        float mouseInput = Input.mouseScrollDelta.y;
+        // float mouseInput = playerInput.actions.FindAction(changeSpeedActionName).ReadValue<float>();
+        player.CurrentControl += -mouseInput * changeControlSpeed;
 
     }
 
