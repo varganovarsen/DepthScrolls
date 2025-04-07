@@ -15,6 +15,8 @@ public class GameController : MonoBehaviour
 
     [SerializeField] GameObject playerPrefab;
     [SerializeField] GameObject guiPrefab;
+    [SerializeField] GameObject soundControllerPrefab;
+    public SoundController soundController;
 
     UI_Controller uiController;
 
@@ -81,7 +83,15 @@ public class GameController : MonoBehaviour
             player.OnDepthChanged -= DepthController.OnDepthChange;
             Destroy(player.gameObject);
 
+
         }
+        
+        if (soundController != null)
+        {
+            Destroy(soundController.gameObject);
+        }
+
+        soundController = Instantiate(soundControllerPrefab, transform).GetComponent<SoundController>();    
 
 
         player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity).GetComponent<PlayerController>();

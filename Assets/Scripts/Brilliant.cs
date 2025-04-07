@@ -9,6 +9,14 @@ public class Brilliant : MonoBehaviour, IPickupable
     [SerializeField] float pickupTime = 1f;
     public float depth;
 
+    private void Update()
+    {
+        if (GameController.Instance.player.Depth >= depth)
+        {
+            PickUp();
+        }
+    }
+
     public bool PickUp()
     {
 
@@ -34,7 +42,7 @@ public class Brilliant : MonoBehaviour, IPickupable
     protected virtual void Awake()
     {
         collider = GetComponent<Collider2D>();
-        
+
     }
 
 

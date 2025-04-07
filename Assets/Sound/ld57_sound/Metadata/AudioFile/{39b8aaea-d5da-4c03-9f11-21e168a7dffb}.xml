@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{39b8aaea-d5da-4c03-9f11-21e168a7dffb}">
+		<property name="assetPath">
+			<value>B10_win.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>7.0655625000000004</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{254624cd-0f13-4676-95a9-d2f3004e7f09}</destination>
+		</relationship>
+	</object>
+</objects>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{7e54e70c-733d-4dfa-be86-aa3b7a340a89}">
+		<property name="assetPath">
+			<value>B09_lose.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>5.0147291666666662</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{254624cd-0f13-4676-95a9-d2f3004e7f09}</destination>
+		</relationship>
+	</object>
+</objects>

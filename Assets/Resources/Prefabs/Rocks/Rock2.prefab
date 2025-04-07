@@ -45,6 +45,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2074b32eeb1ec3408e20deb3dda5d42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hitEvent:
+    Guid:
+      Data1: -1243959985
+      Data2: 1268984933
+      Data3: 1592317334
+      Data4: 1168934479
+    Path: event:/Hit
   initialHealth: 14
   hitEffectPrefab: {fileID: 1429954232896169633, guid: 83036083a4ebcd34f98131bd3cf6f4d2, type: 3}
   hitAnimationCurve:

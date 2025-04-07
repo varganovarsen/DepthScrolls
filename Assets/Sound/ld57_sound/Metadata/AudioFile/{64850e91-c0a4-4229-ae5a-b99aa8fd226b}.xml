@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{64850e91-c0a4-4229-ae5a-b99aa8fd226b}">
+		<property name="assetPath">
+			<value>B01_ded1.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>2.0101041666666668</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{254624cd-0f13-4676-95a9-d2f3004e7f09}</destination>
+		</relationship>
+	</object>
+</objects>

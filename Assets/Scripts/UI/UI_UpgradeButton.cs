@@ -18,12 +18,14 @@ public class UI_UpgradeButton : MonoBehaviour
             basicColorsSet = true;
         }
 
+        MoneyController.OnMoneyChanged += UpdatePrice;
         UpdatePrice();
         upgradeButton.onClick.AddListener(OnUpgradeButtonClick);
     }
 
     void OnDisable()
     {
+        MoneyController.OnMoneyChanged -= UpdatePrice;
         upgradeButton.onClick.RemoveAllListeners();
     }
 
@@ -33,6 +35,7 @@ public class UI_UpgradeButton : MonoBehaviour
         UpdatePrice();
     }
 
+    private void UpdatePrice(int money) => UpdatePrice();
     public void UpdatePrice(){
 
         float price = GameController.Instance.UpgradeController.upgradeCosts[upgradeType];

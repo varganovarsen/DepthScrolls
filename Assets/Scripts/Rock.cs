@@ -6,6 +6,7 @@ using Random = UnityEngine.Random;
 
 public class Rock : MonoBehaviour
 {
+    [SerializeField] FMODUnity.EventReference hitEvent;
 
     private static GameObject[] rockFillingsPrefabs;
 
@@ -104,8 +105,10 @@ public class Rock : MonoBehaviour
 
         hitAnimationCoroutine = StartCoroutine(OnHitAnimation());
 
+        GameController.Instance.soundController.PlayeOneShot(hitEvent, transform.position);
         if (health <= 0f)
         {
+
             ParticleSystem[] particles = GetComponentsInChildren<ParticleSystem>();
             foreach (ParticleSystem particle in particles)
             {
@@ -117,7 +120,9 @@ public class Rock : MonoBehaviour
             DepthController.AddMovingObject(new MovableObject(depth, fillingObject.transform));
             fillingObject.SetActive(true);
             fillingObject = null;
-            gameObject.SetActive(false);
+
+
+            Destroy(gameObject);
         }
     }
 
